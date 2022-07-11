@@ -84,7 +84,7 @@ df_combinations_bed_baths_nhoods %>%
     plot.subtitle = element_textbox_simple(family = "Poppins", size = 35, lineheight = 0.4, margin = margin(0,15,20,15)),
     # Caption
     plot.caption.position = "plot",
-    plot.caption = element_textbox_simple(family = "Poppins", color = "black", size = 20, lineheight = 0.4, halign = 0.5, margin = margin(15,0,5,0)),
+    plot.caption = element_textbox_simple(family = "Poppins", color = "black", size = 20, lineheight = 0.45,halign = 0.5, margin = margin(15,0,5,0)),
     # Legend
     # legend.position = c(0.2,1),
     # legend.text = element_textbox_simple(maxwidth = unit(6,"lines")),
