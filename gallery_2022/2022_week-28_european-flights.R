@@ -58,7 +58,52 @@ df <- data_02 %>%
                                                    country == avg_movements_2019[5,1] & sum_movements_month > avg_movements_2019[5,2] ~ "Higher",
                                                    country == avg_movements_2019[6,1] & sum_movements_month > avg_movements_2019[6,2] ~ "Higher",
                                                    TRUE ~ "Lower"))
+
+# Data Visualization
 df %>%
-  ggplot(aes(x=date_year_month, y=country, size = sum_movements_month, color = higher_than_avg_movement_2019)) +
-  geom_point(alpha = 0.5) +
-  scale_size_area(max_size = 8)
+  ggplot(aes(x=date_year_month, y=1, size = sum_movements_month, color = higher_than_avg_movement_2019)) +
+  geom_vline(aes(xintercept = as.Date("2020-03-01")), size = 0.5) +
+  geom_point(alpha = 0.75) +
+  scale_size_area(max_size = 20, labels = scales::label_comma()) + 
+  #scale_colour_manual(values = met.brewer("Cassatt1",2)) +
+  guides(color="none",
+         size = guide_legend(title = "_**Number of movements**<br>(arrivals + departures)_", title.position = "top",
+                             label.position = "bottom",
+                             override.aes = list(alpha=1)),
+         ) +
+  facet_wrap(~country, nrow = 6) +
+  coord_cartesian(clip = "off") +
+  labs(title = "Airlines are still recovering from the events caused by COVID-19",
+       subtitle = "Description",
+       caption = "#TidyTuesday Week 28: European Flights<br>Data: Eurocontrol<br>Visualization by Isaac Arroyo (@unisaacarroyov)"
+       ) +
+  theme_minimal() + 
+  theme(
+    # Background plot
+    panel.background = element_rect(fill = "transparent", colour = "transparent"),
+    plot.background = element_rect(fill = "white", colour = "transparent"),
+    # Facets
+    strip.text = element_text(face = "bold", hjust = 0),
+    # Legend
+    legend.position = "top",
+    legend.title = element_markdown(),
+    legend.key.width = unit(7,"lines"),
+    # Title
+    plot.title = element_textbox_simple(face = "bold"),
+    plot.title.position = "plot",
+    # Subtitle
+    plot.subtitle = element_textbox_simple(),
+    # Caption
+    plot.caption = element_textbox_simple(face = "bold"),
+    plot.caption.position = "plot",
+    # Axes
+    axis.title = element_blank(),
+    axis.text.y = element_blank(),
+    # Grid
+    panel.grid = element_blank(),
+    panel.grid.major.x = element_line(colour = 'grey60', size = 0.25, linetype = "dashed")
+  )
+
+# Save plot
+ggsave("./gallery_2022/2022_week-28_european-flights.png",
+       width = 11, height = 8.5, units = "in", dpi = 300)
