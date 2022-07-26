@@ -53,4 +53,19 @@ ggplot() +
 
 
 # Data processing (Forma 2)
+# 1 - Obtener los puntos de las coordenadas
+firms_data_pos <- firms_data %>%
+  st_coordinates() %>% 
+  as_tibble() %>%
+  rename(x_pos = X, y_pos = Y)
+  
+
+
+
+
+
+
+
+
+
 
