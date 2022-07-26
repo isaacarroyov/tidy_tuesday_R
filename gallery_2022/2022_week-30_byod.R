@@ -36,6 +36,21 @@ firms_data_density <- firms_data_ppp %>%
   st_set_crs(3857)
 
 # DATA VISUALIZATION (Forma 1)
+ggplot() +
+  geom_sf(data = firms_data_density, aes(fill=v), size = 0) +
+  scale_fill_met_c("Derain", direction = -1) +
+  geom_sf(data = st_boundary(region_yuc), size = 0.3, color = 'black') +
+  coord_sf(ylim = c(22.3e5, 24.6e5), xlim = c(-100.5e5, -97.5e5)) +
+  theme(
+    # Legend
+    legend.position = "none",
+    # Grid
+    panel.grid = element_blank(),
+    # Axis
+    axis.title = element_blank(),
+    axis.text = element_blank()
+  )
+
 
 # Data processing (Forma 2)
 
