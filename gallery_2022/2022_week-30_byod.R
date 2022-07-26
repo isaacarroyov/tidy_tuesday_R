@@ -35,21 +35,22 @@ firms_data_density <- firms_data_ppp %>%
   st_as_sf() %>%
   st_set_crs(3857)
 
+# DATA-VIS SETTINGS
+theme_set(theme_minimal())
+theme_update(
+  legend.position = "none",
+  panel.grid = element_blank(),
+  axis.title = element_blank(),
+  axis.text = element_blank(),
+)
+
+
 # DATA VISUALIZATION (Forma 1)
 ggplot() +
   geom_sf(data = firms_data_density, aes(fill=v), size = 0) +
   scale_fill_met_c("Derain", direction = -1) +
   geom_sf(data = st_boundary(region_yuc), size = 0.3, color = 'black') +
-  coord_sf(ylim = c(22.3e5, 24.6e5), xlim = c(-100.5e5, -97.5e5)) +
-  theme(
-    # Legend
-    legend.position = "none",
-    # Grid
-    panel.grid = element_blank(),
-    # Axis
-    axis.title = element_blank(),
-    axis.text = element_blank()
-  )
+  coord_sf(ylim = c(22.3e5, 24.6e5), xlim = c(-100.5e5, -97.5e5))
 
 
 # Data processing (Forma 2)
@@ -58,8 +59,20 @@ firms_data_pos <- firms_data %>%
   st_coordinates() %>% 
   as_tibble() %>%
   rename(x_pos = X, y_pos = Y)
-  
 
+# DATA VISUALIZATION
+firms_data_pos %>%
+  ggplot(aes(x=x_pos, y=y_pos)) +
+  stat_density_2d_filled(n=75) +
+  scale_fill_manual(values = c("transparent", met.brewer("Derain", n=13, direction = -1)))
+
+
+firms_data_pos %>%
+  ggplot(aes(x=x_pos,y=y_pos)) + 
+  stat_density_2d(geom = "raster",
+                  aes(fill = after_stat(density)),
+                  contour = F) +
+  scale_fill_met_c("Derain", direction = -1)
 
 
 
