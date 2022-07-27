@@ -47,27 +47,23 @@ theme_update(
   axis.text = element_blank(),
 )
 
-# Overall view
-overall_view <- firms_data_pos %>%
-  ggplot(aes(x=x_pos, y=y_pos)) +
-  stat_density_2d_filled(n=200, bins = 50, contour = T, size = 0) +
-  scale_fill_manual(values = c("transparent", MetBrewer::met.brewer("OKeeffe2", n=49, direction = 1))) +
-  labs(title = "Over all view: from 2001 to 2020") +
-  theme(
-    # Background
-    plot.background = element_rect(fill = 'transparent', color = "transparent"),
-    panel.background = element_rect(fill = "transparent", colour = "transparent"),
-    plot.title.position = "plot",
-    plot.title = element_text(face = "bold", family = "titleFont", size = 50)
-    )
-
-# Save overall view
-ggsave(filename = "./gallery_2022/2022_week-30_byod_overall_view.png",
-       plot = overall_view, width = 3.5, height = 3, units = "in")
-
-
-# DONE SMALL PIC
-# ------------------------------------------------------------------------------------------
+# # Overall view
+# overall_view <- firms_data_pos %>%
+#   ggplot(aes(x=x_pos, y=y_pos)) +
+#   stat_density_2d_filled(n=200, bins = 50, contour = T, size = 0) +
+#   scale_fill_manual(values = c("transparent", MetBrewer::met.brewer("OKeeffe2", n=49, direction = 1))) +
+#   labs(title = "Over all view: from 2001 to 2020") +
+#   theme(
+#     # Background
+#     plot.background = element_rect(fill = 'transparent', color = "transparent"),
+#     panel.background = element_rect(fill = "transparent", colour = "transparent"),
+#     plot.title.position = "plot",
+#     plot.title = element_text(face = "bold", family = "titleFont", size = 50)
+#     )
+# 
+# # Save overall view
+# ggsave(filename = "./gallery_2022/2022_week-30_byod_overall_view.png",
+#        plot = overall_view, width = 3.5, height = 3, units = "in")
 
 
 p2 <- firms_data_pos %>%
