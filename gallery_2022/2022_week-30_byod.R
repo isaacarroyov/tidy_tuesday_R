@@ -60,7 +60,7 @@ theme_update(
 #     plot.title.position = "plot",
 #     plot.title = element_text(face = "bold", family = "titleFont", size = 50)
 #     )
-# 
+
 # # Save overall view
 # ggsave(filename = "./gallery_2022/2022_week-30_byod_overall_view.png",
 #        plot = overall_view, width = 3.5, height = 3, units = "in")
@@ -73,25 +73,36 @@ p2 <- firms_data_pos %>%
   scale_fill_manual(values = c("#FEF8F0", MetBrewer::met.brewer("OKeeffe2", n=49, direction = 1))) +
   facet_wrap(~acq_date) +
   labs(title = "20 years of historical hotspots in Yucatan, Mexico",
-       subtitle = "Thanks to the data provided by NASA's Fire Information for Resource Management System (FIRMS), we can see what had been the potential wildfires (confidence higher than 84%) density within Yucatan's territory between 2001 and 2020.<br>The overall view of these potential wildfires suggests a higher density in the southwest region; however, looking at individual years, the visualization showcases that in 2003, there was a much higher concentration of wildfires in the northern part of the state.",
-       caption = "Visualization by Isaac Arroyo<br>Data: NASA's Fire Information for Resource Management System (FIRMS)") +
+       subtitle = "Thanks to the data provided by NASA's Fire Information for Resource Management System (FIRMS), we can see what had been the potential wildfires (confidence higher than 84%) density within Yucatan's territory between 2001 and 2020.<br>The overall view of these potential wildfires suggests a higher density in the southwest region (right image); however, looking at individual years (grid from below), the visualization showcases that in 2003, there was a much higher concentration of wildfires in the northern part of the state.",
+       caption = "#TidyTuesday Week 30: BYOD (Bring Your Own Data)<br>Visualization by Isaac Arroyo<br>Data: NASA's Fire Information for Resource Management System (FIRMS)") +
   theme(
     # Background
     plot.background = element_rect(fill = '#FEF8F0', color = "#FEF8F0"),
     panel.background = element_rect(fill = "transparent", colour = "transparent"),
     # Title
     plot.title.position = "plot",
+    plot.title = element_text(family = "titleFont", face = "bold", size = 80, margin = margin(10,0,0,0), hjust = 0.5),
     # Subtitle
-    plot.subtitle = element_markdown(),
+    plot.subtitle = element_textbox_simple(family = "bodyFont", lineheight = 0.4, size = 40,
+                                           width = unit(4.5, "in"), halign = 0, hjust = 0,
+                                           margin = margin(t = 0.5,b = 0.75,r = 0, l = 0.25, unit = "cm")
+                                           ),
+    # Strips
+    strip.text = element_text(family = "titleFont", face = "bold", size = 40),
+  
     # Caption
     plot.caption.position = "plot",
-    plot.caption = element_markdown(),
-  )
+    plot.caption = element_textbox_simple(family = "bodyFont", lineheight = 0.4, face = "bold", size = 30, margin = margin(t = 0.5, b = 0.25, l = 0, r = 0, unit = "cm"))
+    )
 
+
+p2 %>%
+  ggdraw()
+  
 
 ggsave(filename = "./gallery_2022/2022_week-30_byod.png",
        plot = p2 ,
-       width = 8.5, height =11, units = "in" )
+       width = 8.5, height = 11, units = "in" )
 
 
 
