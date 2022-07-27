@@ -47,33 +47,28 @@ theme_update(
   axis.text = element_blank(),
 )
 
-# # Overall view
-# overall_view <- firms_data_pos %>%
-#   ggplot(aes(x=x_pos, y=y_pos)) +
-#   stat_density_2d_filled(n=200, bins = 50, contour = T, size = 0) +
-#   scale_fill_manual(values = c("transparent", MetBrewer::met.brewer("OKeeffe2", n=49, direction = 1))) +
-#   labs(title = "Over all view: from 2001 to 2020") +
-#   theme(
-#     # Background
-#     plot.background = element_rect(fill = 'transparent', color = "transparent"),
-#     panel.background = element_rect(fill = "transparent", colour = "transparent"),
-#     plot.title.position = "plot",
-#     plot.title = element_text(face = "bold", family = "titleFont", size = 50)
-#     )
-
-# # Save overall view
-# ggsave(filename = "./gallery_2022/2022_week-30_byod_overall_view.png",
-#        plot = overall_view, width = 3.5, height = 3, units = "in")
+# Overall view
+overall_view <- firms_data_pos %>%
+  ggplot(aes(x=x_pos, y=y_pos)) +
+  stat_density_2d_filled(n=200, bins = 50, contour = T, size = 0) +
+  scale_fill_manual(values = c("transparent", MetBrewer::met.brewer("OKeeffe2", n=49, direction = 1))) +
+  labs(title = "Over all view:\nfrom 2001 to 2020") +
+  theme(
+    # Background
+    plot.background = element_rect(fill = 'transparent', color = "transparent"),
+    panel.background = element_rect(fill = "transparent", colour = "transparent"),
+    plot.title.position = "plot",
+    plot.title = element_text(face = "bold", family = "titleFont", size = 40, lineheight = 0.3, hjust = 0.5)
+    )
 
 
 p2 <- firms_data_pos %>%
   ggplot(aes(x=x_pos, y=y_pos)) +
   stat_density_2d_filled(n=200, bins = 50, contour = T, size = 0) +
-  #scale_fill_manual(values = c("white", NatParksPalettes::natparks.pals("Arches2", 49, direction = -1)))
   scale_fill_manual(values = c("#FEF8F0", MetBrewer::met.brewer("OKeeffe2", n=49, direction = 1))) +
   facet_wrap(~acq_date) +
   labs(title = "20 years of historical hotspots in Yucatan, Mexico",
-       subtitle = "Thanks to the data provided by NASA's Fire Information for Resource Management System (FIRMS), we can see what had been the potential wildfires (confidence higher than 84%) density within Yucatan's territory between 2001 and 2020.<br>The overall view of these potential wildfires suggests a higher density in the southwest region (right image); however, looking at individual years (grid from below), the visualization showcases that in 2003, there was a much higher concentration of wildfires in the northern part of the state.",
+       subtitle = "Thanks to the data provided by NASA's Fire Information for Resource Management System (FIRMS), we can see what had been the potential wildfires (confidence higher than 84%) density within Yucatan's territory between 2001 and 2020.<br><br>The overall view of these potential wildfires suggests a higher density in the southwest region (<em>right image</em>); however, looking at individual years (<em>grid from below</em>), the visualization showcases that in 2003, there was a much higher concentration of wildfires in the northern part of the state.",
        caption = "#TidyTuesday Week 30: BYOD (Bring Your Own Data)<br>Visualization by Isaac Arroyo<br>Data: NASA's Fire Information for Resource Management System (FIRMS)") +
   theme(
     # Background
@@ -83,28 +78,20 @@ p2 <- firms_data_pos %>%
     plot.title.position = "plot",
     plot.title = element_text(family = "titleFont", face = "bold", size = 80, margin = margin(10,0,0,0), hjust = 0.5),
     # Subtitle
-    plot.subtitle = element_textbox_simple(family = "bodyFont", lineheight = 0.4, size = 40,
-                                           width = unit(4.5, "in"), halign = 0, hjust = 0,
-                                           margin = margin(t = 0.5,b = 0.75,r = 0, l = 0.25, unit = "cm")
-                                           ),
+    plot.subtitle = element_textbox_simple(family = "bodyFont", lineheight = 0.4, size = 41.5, width = unit(5, "in"), halign = 0, hjust = 0, margin = margin(t = 0.7,b = 0.25,r = 0, l = 0.25, unit = "cm")),
     # Strips
     strip.text = element_text(family = "titleFont", face = "bold", size = 40),
-  
     # Caption
     plot.caption.position = "plot",
     plot.caption = element_textbox_simple(family = "bodyFont", lineheight = 0.4, face = "bold", size = 30, margin = margin(t = 0.5, b = 0.25, l = 0, r = 0, unit = "cm"))
     )
 
 
-p2 %>%
-  ggdraw()
+final <- ggdraw() +
+  draw_plot(p2, 0,0,1,1) + 
+  draw_plot(overall_view, 0.65, .71, 0.35, 0.23)
   
-
-ggsave(filename = "./gallery_2022/2022_week-30_byod.png",
-       plot = p2 ,
-       width = 8.5, height = 11, units = "in" )
-
-
+ggsave(filename = "./gallery_2022/2022_week-30_byod.png", plot = final, width = 8.5, height = 11, units = "in" )
 
 # Visualization no elegida
 # ------------------------------------------------------------------------------
@@ -136,6 +123,3 @@ ggsave(filename = "./gallery_2022/2022_week-30_byod.png",
 #   MetBrewer::scale_fill_met_c("Derain", direction = -1) +
 #   geom_sf(data = st_boundary(region_yuc), size = 0.3, color = 'black') +
 #   coord_sf(ylim = c(22.3e5, 24.6e5), xlim = c(-100.5e5, -97.5e5))
-
-
-
