@@ -69,7 +69,7 @@ p2 <- firms_data_pos %>%
   facet_wrap(~acq_date) +
   labs(title = "20 years of historical hotspots in Yucatan, Mexico",
        subtitle = "Thanks to the data provided by NASA's Fire Information for Resource Management System (FIRMS), we can see what had been the potential wildfires (confidence higher than 84%) density within Yucatan's territory between 2001 and 2020.<br><br>The overall view of these potential wildfires suggests a higher density in the southwest region (<em>right image</em>); however, looking at individual years (<em>grid from below</em>), the visualization showcases that in 2003, there was a much higher concentration of wildfires in the northern part of the state.",
-       caption = "#TidyTuesday Week 30: BYOD (Bring Your Own Data)<br>Visualization by Isaac Arroyo<br>Data: NASA's Fire Information for Resource Management System (FIRMS)") +
+       caption = "#TidyTuesday Week 30: BYOD (Bring Your Own Data)<br>Visualization by Isaac Arroyo (@unisaacarroyov on Twitter)<br>Data: NASA's Fire Information for Resource Management System (FIRMS)") +
   theme(
     # Background
     plot.background = element_rect(fill = '#FEF8F0', color = "#FEF8F0"),
