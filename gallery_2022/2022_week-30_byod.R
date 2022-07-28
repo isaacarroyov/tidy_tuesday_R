@@ -52,7 +52,7 @@ overall_view <- firms_data_pos %>%
   ggplot(aes(x=x_pos, y=y_pos)) +
   stat_density_2d_filled(n=200, bins = 50, contour = T, size = 0) +
   scale_fill_manual(values = c("transparent", MetBrewer::met.brewer("OKeeffe2", n=49, direction = 1))) +
-  labs(title = "Over all view:\nfrom 2001 to 2020") +
+  labs(title = "Overall view:\nfrom 2001 to 2020") +
   theme(
     # Background
     plot.background = element_rect(fill = 'transparent', color = "transparent"),
