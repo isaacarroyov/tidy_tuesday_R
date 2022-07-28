@@ -15,3 +15,8 @@ Contributions to the #TidyTuesday challenge created by [@R4DScommunity](https://
 [**Code**](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/gallery_2022/2022_week-29_technology-adoption.R)
 
 ![](./gallery_2022/2022_week-29_technology-adoption.png)
+
+### Week 30: Bring Your Own Data (BYOD) ➡️ Undergrad thesis data: Hotspots in Yucatan, Mexico.
+[**Code**](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/gallery_2022/2022_week-30_byod.R)
+
+![](./gallery_2022/2022_week-30_byod.png)
