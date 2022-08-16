@@ -5,6 +5,7 @@ library(ggtext)
 library(sysfonts)
 library(showtextdb)
 library(showtext)
+library(NatParksPalettes)
 
 
 # Google Fonts
@@ -59,8 +60,8 @@ p3 <- p2 + geom_textbox(data = tribble(~x,~y,~label,
                         lineheight = 0.4)
 # Scale sizes and colours
 p4 <- p3 + scale_size_area(max_size = 20) +
-  scale_colour_manual(values = NatParksPalettes::natparks.pals(name = 'DeathValley', n = 9)) +
-  scale_fill_manual(values = NatParksPalettes::natparks.pals(name = 'DeathValley', n = 9))
+  scale_colour_manual(values = natparks.pals(name = 'DeathValley', n = 9)) +
+  scale_fill_manual(values = natparks.pals(name = 'DeathValley', n = 9))
 # Add title, subtitle, caption
 p5 <- p4 + labs(title = "<span style='font-family:spanishFont'>_Wachen el paisaje, homies_</span> <b>(Check out the new view, homies)</b>",
                 subtitle = "Ferris wheels are a well-known attraction in many cities around the globe due to the panoramic view the people can enjoy. The visualization shows some of the most famous Ferris wheels currently operating. <br>The circles' radiuses are size encoded (but not at the same scale as the lines); the maximum height the viewer can be is the distance from the beginning of the line (top) to the center of the circle. Finally, the countries are colour encoded. However, all the information is labelled.",
@@ -68,7 +69,7 @@ p5 <- p4 + labs(title = "<span style='font-family:spanishFont'>_Wachen el paisaj
   theme_void() +
   coord_cartesian(clip = "off", ylim = c(-150, max(datos$max_height_view)+260))
 # Theme
-p6 <- theme(
+p6 <- p5 + theme(
   legend.position = "none",
   # Bacground
   plot.background = element_rect(fill = '#FFFCFB', colour = '#FFFAF9'),
