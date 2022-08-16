@@ -47,5 +47,8 @@ p1 <- datos %>%
     plot.caption = element_textbox_simple(),
   )
 
-
+ggsave(filename = "./gallery_2022/2022_week-32_ferris-wheels.png",
+       plot = p1,
+       height = 8.5, width = 11, units = "in",
+       dpi = 300)
 
