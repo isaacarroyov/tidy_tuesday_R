@@ -32,3 +32,9 @@ Contributions to the #TidyTuesday challenge created by [@R4DScommunity](https://
 [**Code**](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/gallery_2022/2022_week-32_ferris-wheels.R)
 
 ![](./gallery_2022/2022_week-32_ferris-wheels.png)
+
+### Week 33: Open Psychometrics by [Tanya Shapiro](https://twitter.com/tanya_shapiro)
+
+[Code](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/gallery_2022/2022_week-33_open-psychometrics.R)
+
+![Work in progress](./gallery_2022/2022_week-33_open-psychometrics.png) ⌛
