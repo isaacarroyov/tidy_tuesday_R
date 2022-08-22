@@ -16,10 +16,14 @@
 
 library(dplyr)
 library(ggplot2)
+library(gghighlight)
+library(ggrepel)
+library(MetBrewer)
 library(ggtext)
 library(sysfonts)
 library(showtext)
 library(factoextra)
+
 
 # ------ LOAD DATA ------
 psychometrics_characters <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-08-16/psych_stats.csv")
@@ -64,15 +68,40 @@ numeric_data <- pca_dataset %>% select_if(is.numeric)
 pca_results <- prcomp(numeric_data)
 fviz_eig(pca_results)
 
-# Keep the firts 3 PCA's
+# Keep the firts 2 PCA's
 df <- pca_dataset %>%
   bind_cols(pca_results$x %>%
   as_tibble() %>%
-  select(PC1,PC2,PC3))
+  select(PC1,PC2))
 
 # ------ DATA VISUALIZATION------
+fav_shows <- c('Avatar: The Last Airbender', 'Gossip Girl', 'Hamilton', 'Stranger Things', 'The Umbrella Academy')
 
+set.seed(11)
+p1 <- df %>%
+  ggplot(aes(x=PC1, y= PC2, colour= uni_name)) +
+  geom_point() +
+  gghighlight(uni_name %in% fav_shows, max_highlight = 100) +
+  geom_label_repel(aes(label=char_name), max.overlaps = 100) +
+  scale_colour_manual(values = met.brewer("VanGogh2", n=5)) +
+  labs(title="Cool title",
+       subtitle = "Description",
+       caption = "Designed by Isaac Arroyo (@unisaacarroyov on Twitter) <br>#TidyTuesday Week 33: Open Psychometrics by Tanya Shapiro (@tanya_shapiro on Twitter)") + 
+  theme_void() +
+  theme(
+    # Title
+    plot.title.position = "plot",
+    plot.title = element_textbox(),
+    # Subtitle
+    plot.subtitle = element_textbox(),
+    # Caption
+    plot.caption.position = "plot",
+    plot.caption = element_textbox(halign = 0, hjust = 0,),
+    
+  )
+    
 
-
-
-
+ggsave(filename = "./gallery_2022/2022_week-33_open-psychometrics.png",
+       plot = p1,
+       width = 8.5, height = 11, units = "in",
+       dpi = 300)
