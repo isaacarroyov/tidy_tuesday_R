@@ -87,18 +87,25 @@ body_font <- "bodyFont"
 
 fav_shows <- c('Avatar: The Last Airbender', 'Gossip Girl', 'Hamilton', 'Stranger Things', 'The Umbrella Academy')
 title_text <- "The Universe of Personalities"
-subtitle_text <- "A fictional character does not have a real personality, but people might perceive it to have one. Thanks to this dataset, we can view the personality spectrum of the characters from more than 50 TV Shows or movies.<br>I selected ten personality traits (cocky, independent, genius, eloquent, driven, chatty, adventurous, active, decisive and crazy). Then, in order to see them in a 2-dimensional plane, I performed a PCA on them.<br>The highlighted points are characters from my favourite TV shows, The Umbrella Academy, Gossip Girl, Avatar: The Last Airbender, Hamilton and The Umbrella Academy."
+subtitle_text <- "A fictional character does not have a real personality, but people might perceive it to have one. Thanks to this dataset, we can view the personality spectrum of the characters from more than 50 TV Shows or movies.<br>I selected ten personality traits (cocky, independent, genius, eloquent, driven, chatty, adventurous, active, decisive and crazy). Then, in order to see them in a 2-dimensional plane, I performed a PCA on them.<br>The highlighted points are characters from my favourite TV shows: <span style='color:#CF3A36'><b>Stranger Things</b></span>, <span style='color:#D6705C'><b>Gossip Girl</b></span>, <span style='color:#0C7156'><b>Avatar: The Last Airbender</b></span>, <span style='color:#EA7428'><b>Hamilton</b></span> and <span style='color:#663171'><b>The Umbrella Academy</b></span>."
 caption_text <- "Designed by Isaac Arroyo (@unisaacarroyov on Twitter) <br>#TidyTuesday Week 33: Open Psychometrics by Tanya Shapiro (@tanya_shapiro on Twitter)"
 
 
 p1 <- df %>%
   ggplot(aes(x=PC1, y= PC2, colour= uni_name)) +
-  geom_point() +
-  gghighlight(uni_name %in% fav_shows, max_highlight = 50,
-              unhighlighted_params = list(color='gray50', alpha = 0.5)
+  geom_point(size = 3) +
+  gghighlight(uni_name %in% fav_shows,
+              max_highlight = 50,
+              unhighlighted_params = list(color='gray50', alpha = 0.3, size = 2)
               ) +
   geom_label_repel(aes(label=char_name), max.overlaps = 50, seed = 11,
-                   force = 2, nudge_x = 10,
+                   force = 3,
+                   arrow = grid::arrow(length = unit(5,'pt'), ends = 'last'),
+                   point.padding = unit(10,"pt"),
+                   nudge_x = -5,
+                   nudge_y = 5,
+                   label.size = 0.5,
+                   size = 10,
                    family = body_font,
                    ) +
   scale_colour_manual(values = met.brewer("Java", n=5, direction = -1)) +
@@ -111,25 +118,31 @@ p1 <- df %>%
     plot.background = element_rect(fill = '#F6E3BD', colour = '#F6E3BD'),
     # Title
     plot.title.position = "plot",
-    plot.title = element_textbox(family = title_font, face = 'bold',
+    plot.title = element_textbox(family = title_font,
+                                 face = 'bold',
                                  size = rel(9),
-                                 padding = maring(0,0,0,0),
-                                 margin = margin(0.125,0,0,0, unit = "in")
+                                 lineheight = 0.2,
+                                 padding = margin(0,0,0,0),
+                                 margin = margin(1/3,1/3,0,1/3, unit = "in")
                                  ),
     # Subtitle
-    plot.subtitle = element_textbox(family = body_font, face = 'plain', size = rel(3.5),
+    plot.subtitle = element_textbox(family = body_font,
+                                    size = rel(3.5),
                                     lineheight = 0.2,
-                                    width = unit(7.5,'in'),
+                                    halign = 0, hjust = 0,
+                                    width = unit(8,'in'),
                                     padding = margin(0,0,0,0),
-                                    margin = margin(0,0,0,0, unit = "in")
+                                    margin = margin(0.125,1/3,0.125,1/3, unit = "in")
                                     ),
     # Caption
     plot.caption.position = "plot",
-    plot.caption = element_textbox(halign = 0, hjust = 0, family = body_font, face = 'bold',
-                                   size = rel(2),
+    plot.caption = element_textbox(halign = 0, hjust = 0,
+                                   family = body_font,
+                                   face = 'bold',
+                                   size = rel(2.7),
                                    lineheight = 0.5,
                                    padding = margin(0,0,0,0),
-                                   margin = margin(0,0,0,0, unit = "in")
+                                   margin = margin(0.125,1/3,1/3,1/3, unit = "in")
                                    )
     
   )
