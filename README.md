@@ -35,6 +35,11 @@ Contributions to the #TidyTuesday challenge created by [@R4DScommunity](https://
 
 ### Week 33: Open Psychometrics by [Tanya Shapiro](https://twitter.com/tanya_shapiro)
 
-[Code](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/gallery_2022/2022_week-33_open-psychometrics.R)
+[**Code**](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/gallery_2022/2022_week-33_open-psychometrics.R)
 
 ![](./gallery_2022/2022_week-33_open-psychometrics.png)
+
+### Week 34: CHIP dataset
+[**Code**](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/gallery_2022/2022_week-34_chips.R)
+
+![](./gallery_2022/2022_week-34_chips.png)
