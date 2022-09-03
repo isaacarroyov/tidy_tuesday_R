@@ -38,27 +38,76 @@ pell <- pell %>% janitor::clean_names()
 # Dartmouth College (New Hampshire)
 # University of Pennsylvania (Pennsylvania)
 # Cornell University (New York)
-  
 
-# 02 - Encontrar los estados donde hayan Ivy Leagues
+# Filtrar only us states according to states.abb
+pell <- pell %>%
+  filter(state %in% state.abb)
+
+
+# CASO 01 -> usd_per_student en us states
+# Encontrar los estados donde hayan Ivy Leagues
 ivy_league_states <- c("Massachusetts", "Connecticut",
                        "New Jersey","New York", "Rhode Island",
                        "New Hampshire", "New York")
 ivy_league_states_abb <- state.abb[match(ivy_league_states,state.name)]
 
 
+df_usd_per_student_states <- pell %>%
+  group_by(state, year) %>%
+  summarise(sum_award = sum(award),
+            sum_recipient = sum(recipient)) %>%
+  ungroup() %>%
+  mutate(usd_per_student = sum_award/sum_recipient,
+         is_it_ivy = case_when(state %in% ivy_league_states ~ "Ivy",
+                               T ~ NA_character_))
 
-# df <- df_usd_per_student_states %>%
-#   filter(state %in% state.abb) %>%
-#   mutate(is_it_ivy = case_when(state %in% ivy_league_states_abb ~ "Ivy",
-#                                T ~ NA_character_))
-# 
-# df_usd_per_student_states <- pell %>%
-#   group_by(state, year) %>%
-#   summarise(sum_award = sum(award),
-#             sum_recipient = sum(recipient)) %>%
-#   ungroup() %>%
-#   mutate(usd_per_student = sum_award/sum_recipient)
+
+# CASO 02 -> usd_per_student en us states donde hay Ivy League
+# Code from @BlakeRobMills
+ivy_league_unis <-  c("Harvard University", "Columbia University", "Columbia University in the City of New y",
+                      "Columbia University in the City of New York","Brown University",
+                      "University of Pennsylvania", "Yale University", "Princeton University",
+                      "Dartmouth College", "Cornell University")
+
+# Relation between unis and states they belong to
+relation_states_ivy_abb <- pell %>%
+  filter(state %in% ivy_league_states_abb) %>%
+  mutate(name = case_when(name == ivy_league_unis[1] ~ "Harvard",
+                          name %in% ivy_league_unis[2:4] ~ "Columbia",
+                          name == ivy_league_unis[5] ~ "Brown",
+                          name == ivy_league_unis[6] ~ "UPenn",
+                          name == ivy_league_unis[7] ~ "Yale",
+                          name == ivy_league_unis[8] ~ "Princeton",
+                          name == ivy_league_unis[9] ~ "Dartmouth",
+                          name == ivy_league_unis[10] ~ "Cornell",
+                          T ~ name)) %>%
+  select(name, state) %>%
+  group_by(name) %>%
+  summarise(state_belong = max(state))
+
+
+
+df_usd_per_student_states_unis <- pell %>%
+  filter(state %in% ivy_league_states_abb) %>%
+  mutate(name = case_when(name == ivy_league_unis[1] ~ "Harvard",
+                          name %in% ivy_league_unis[2:4] ~ "Columbia",
+                          name == ivy_league_unis[5] ~ "Brown",
+                          name == ivy_league_unis[6] ~ "UPenn",
+                          name == ivy_league_unis[7] ~ "Yale",
+                          name == ivy_league_unis[8] ~ "Princeton",
+                          name == ivy_league_unis[9] ~ "Dartmouth",
+                          name == ivy_league_unis[10] ~ "Cornell",
+                          T ~ name)) %>%
+  group_by(name, year) %>%
+  summarise(sum_award = sum(award),
+            sum_recipient = sum(recipient)) %>%
+  ungroup() %>%
+  mutate(usd_per_student = sum_award/sum_recipient,
+         is_it_ivy = case_when(name %in% c("Harvard","Columbia","Brown","UPenn","Yale","Princeton","Dartmouth","Cornell") ~ "Ivy",
+                               T ~ NA_character_)) %>%
+  left_join(relation_states_ivy_abb, by = "name")
+
+
 # ------ DATA VISUALIZATION -------
 # Colour palette
 
