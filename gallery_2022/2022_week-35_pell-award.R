@@ -130,94 +130,201 @@ df_usd_per_student_states_unis %>%
 colour_palette <- met.brewer("Archambault", n = 7)
 
 # Text
-# title_text <- "Hermosa grafica"
-# subtitle_text <- "Hermosa descripcion"
-# caption_text <- "Hermosa caption"
+title_text_01 <- "Pell Grants: Where are the Ivy League schools?"
+subtitle_text_01 <- "First, for those unfamiliar with these terms (like me), let's start with <b>Ivy League</b>. These universities/colleges are considered the most sought-after institutions of higher learning in the country and worldwide. Ivy League schools have been known for their highly selective admissions process, academic excellence and promising career opportunities for those who attend (well-rounded student-athletes, future presidents, Nobel Prize winners and other high-achieving graduates).<br><br>Secondly, The <b>Pell Grant</b> is a form of need-based federal financial aid that typically does not have to be repaid, which makes it highly desirable. It is awarded by the U.S. Department of Education to help eligible low-income students pay for college costs, including tuition, fees, room and board, and other educational expenses.<br><br>The data visualization showcases what public data informs about the money the universities/colleges (who received Pell Grants) and states get and the number of recipients, focusing on the Ivy League schools."
+subtitle_text_02 <- "The following chart expands the view of the previous one by displaying the distribution of the average amount of dollars per recipient -from Pell Grants- the universities/colleges received in a given year. The bigger dots are the ones from the previous visualization (the average amount of dollars per recipient a U.S. State received in a given year). The highlighted points are the Ivy League schools."
+caption_text <- "_Note:_ Due to the extensive and diverse names of schools, simplifying them was laborious. So, some schools are written differently, leading to unprecise averages. It was easier to focus on Ivy League schools.<br>Designed by Isaac Arroyo (@unisaacarroyov on twitter). | #TidyTuesday Week 35: Pell Award | Data source: US Department of Education"
+
+
 
 # Typography
 font_add(family = 'body_font', regular = './../free_fonts/apfelGrotezk/ApfelGrotezk-Regular.otf')
-font_add_google('Playfair Display', 'title_font')
+font_add(family = 'title_font', regular = './../free_fonts/Faune_Fonts/Otf/Faune-TextRegular.otf')
 showtext_auto()
 
 
 body_font <- 'body_font'
 title_font <- 'title_font'
 
+
+# ------ Theme settings ------
 theme_set(theme_classic(base_family = body_font))
+theme_update(
+  legend.position = "none",
+  # Background
+  plot.background = element_rect(fill = '#FFFFFF'),
+  panel.background = element_blank(),
+  # Title
+  plot.title.position = "plot",
+  plot.title = element_textbox(family = title_font, face = 'bold',
+                               size = rel(9),
+                               width = unit(10,'in'),
+                               padding = margin(0,0,0,0),
+                               margin = margin(t =0.25, b = 0, unit = 'in')
+                               ),
+  # Subtitle
+  plot.subtitle = element_textbox(size = rel(3.5),
+                                  lineheight = 0.4,
+                                  width = unit(10,'in'),
+                                  padding = margin(0,0,0,0),
+                                  margin = margin(t = 0.35, b = 0.35, unit = 'in')
+                                  ),
+  # Caption
+  plot.caption.position = "plot",
+  plot.caption = element_textbox(face = 'bold',
+                                 size = rel(2),
+                                 lineheight = 0.4,
+                                 width = unit(10,'in'),
+                                 halign = 0.5,
+                                 hjust = 0.5,
+                                 padding = margin(0,0,0,0),
+                                 margin = margin(t = 15, b = 10),
+                                 ),
+  # Axis (text)
+  axis.title = element_blank(),
+  axis.text = element_markdown(size = rel(3), lineheight = 0.3),
+  axis.text.x = element_markdown(margin = margin(t = 3)),
+  axis.text.y = element_markdown(margin = margin(r = 3)),
+  # Axis (lines and ticks)
+  axis.ticks.length = unit(4,'pt'),
+  # Grid
+  panel.grid.major.y = element_line(size = 0.15, linetype = 'dashed', colour = 'gray80'),
+  # Facets
+  strip.background = element_blank(),
+  strip.text = element_markdown(face = 'bold', family = title_font,
+                                halign = 0.5, hjust = 0.5,
+                                size = rel(4)
+                                )
+)
+
+
+# ------ P0 ------
+p0 <- ggplot() +
+  geom_textbox(data = tribble(~x,~y,~label,
+                           -0.15,0,subtitle_text_01),
+            aes(x=x,y=y,label=label),
+            size = rel(13),
+            family = body_font,
+            lineheight = 0.4,
+            fill = 'white',
+            box.colour = 'white',
+            width = unit(3.7,'in'),
+            halign = 0, hjust =0, valign = 1, vjust = 1,
+            box.padding = margin(0,0,0,0),
+            box.margin = margin(0,0,0,0),
+            ) +
+  coord_cartesian(ylim = c(-0.25,0), xlim = c(0,1), clip = "off") +
+  theme_void(base_family = body_font) +
+  theme(
+    # Title
+    plot.title.position = "plot",
+    plot.title = element_textbox(family = title_font, face = 'bold',
+                                 size = rel(9),
+                                 lineheight = 0.2,
+                                 width = unit(5,'in'),
+                                 padding = margin(0,0,0,0),
+                                 margin = margin(t =0.25, unit = 'in')),
+    )
 
 
 
-# PLOT OF ALL STATES
+
+# ------ P1 ------
 set.seed(11)
 p1 <- df_usd_per_student_states %>%
   ggplot(aes(x=year, y=avg_usd_per_student)) +
   ggdist::stat_slab(data = df_usd_per_student_states,
                     aes(x=year, y=avg_usd_per_student),
                     width = 1,
+                    alpha = 1,
+                    fill = '#CBB289',
                     trim = F) +
-  geom_jitter(color = 'gray90', width = 0.1, size = 0.5) +
+  geom_jitter(color = 'gray40', width = 0.1, size = 0.2) +
   geom_jitter(data = df_usd_per_student_states %>% filter(is_it_ivy == "Ivy"),
               aes(x=year, y=avg_usd_per_student, colour = state),
               width = 0.1) +
   geom_textbox(data = tribble(~x,~y,~label,
-                              factor(2010), 2500, "This chart showcases the average amount of dollars per recipient a State received -from Pell Grants- in a given year. The highlighted dots are the states where there is at least one Ivy League school.",
-                              factor(2000), 4500, "The list of Ivy League schools includes some of the oldest educational institutions, with well-respected professors, generous research grants and significant financial aid resources: <span style='color:#88A0DC'><b>Connecticut</b></span>, <span style='color:#381A61'><b>Massachusetts</b></span>, <span style='color:#7C4C73'><b>New Hampshire</b></span>, <span style='color:#ED968B'><b>New Jersey</b></span>, <span style='color:#AB3329'><b>New York</b></span>, <span style='color:#E78429'><b>Pennsylvania</b></span> and <span style='color:#F9D14A'><b>Rhode Island</b></span>"),
+                              factor(2010), 2750, "This chart showcases the average amount of dollars per recipient a U.S. State received -from Pell Grants- in a given year. The highlighted dots are the states where there is at least one Ivy League school.",
+                              factor(2000), 4750, "The list of Ivy League schools includes some of the oldest educational institutions, with well-respected professors, generous research grants and significant financial aid resources: <span style='color:#88A0DC'><b>Connecticut</b></span>, <span style='color:#381A61'><b>Massachusetts</b></span>, <span style='color:#7C4C73'><b>New Hampshire</b></span>, <span style='color:#ED968B'><b>New Jersey</b></span>, <span style='color:#AB3329'><b>New York</b></span>, <span style='color:#E78429'><b>Pennsylvania</b></span> and <span style='color:#DAA807'><b>Rhode Island</b></span>"),
                aes(x=x,y=y,label=label),
-               halign = 0, hjust = 0,
-               fill = 'transparent',
+               halign = 0, hjust = 0, valign = 1, vjust = 1,
+               fill = '#FFFDFC',
+               box.colour = '#000000',
+               box.r = unit(5,'pt'),
+               box.padding = margin(8,8,8,8),
+               family = body_font,
+               size = rel(10),
+               lineheight = 0.4,
+               width = unit(2,'in'),
                ) +
   scale_colour_manual(values = colour_palette) +
-  coord_cartesian(ylim = c(1500,5000)) #+ labs(title = title_text, subtitle = subtitle_text, caption = caption_text) +
+  scale_y_continuous(breaks = seq(1500,5000,500), labels = scales::label_dollar(big.mark = ',', suffix = "<br>per student")) +
+  scale_x_discrete(labels = c("'99",paste0("'0",seq(0,9)),paste0("'",seq(10,17)))) +
+  coord_cartesian(ylim = c(1500,5000), clip = 'off')
 
-
-p1 +
-  theme(
-    legend.position = "none",
-    # Background
-    plot.background = element_rect(fill = '#FEFBF8'),
-    panel.background = element_blank(),
-    # Title
-    # Subtitle
-    # Caption
-    # Axis (text)
-    # Axis (lines)
-    # Grid
-  )
-
+# # ------ P2 ------
 set.seed(11)
-df_usd_per_student_states_unis %>%
-  ggplot(aes(x = year, y = avg_usd_per_student, colour = state)) +
-  geom_jitter(width = 0.1, size = 0.1, alpha = 0.1) +
-  # stat_summary(func = 'mean', geom = "point", size = 1, colour = 'black') +
+p2 <- df_usd_per_student_states_unis %>%
+  ggplot(aes(x = year, y = avg_usd_per_student)) +
+  geom_jitter(aes(colour = state), width = 0.1,
+              size = 1,
+              shape = 21,
+              colour = 'gray90',
+              fill = 'white',
+              alpha = 0.1) +
+  geom_jitter(data = df_usd_per_student_states_unis %>% filter(is_it_ivy=='Ivy', name != "Cornell"),
+              aes(x = year, y = avg_usd_per_student, colour = state),
+              width = 0.1,
+              shape = 21,
+              fill = 'white',
+              stroke = 0.75,
+              size = 1) +
+  geom_jitter(data = df_usd_per_student_states_unis %>% filter(is_it_ivy=='Ivy', name == "Cornell"),
+              aes(x = year, y = avg_usd_per_student, colour = state),
+              width = 0.1,
+              shape = 23,
+              fill = 'white',
+              stroke = 0.75,
+              size = 1) +
   geom_point(data = df_usd_per_student_states %>% filter(is_it_ivy=='Ivy'),
-             aes(x=year, y=avg_usd_per_student),
-             colour = 'black',
-             size = 1
-             ) +
+             aes(x=year, y=avg_usd_per_student, colour = state),
+             size = 2) +
+  ggrepel::geom_label_repel(data = df_usd_per_student_states_unis %>% filter(year == 2009, !is.na(is_it_ivy)),
+                            aes(label=name, colour = state),
+                            family = body_font,
+                            size = 10,
+                            fontface = 'bold',
+                            seed = 1,
+                            force_pull = 0.1,
+                            force = 100,
+                            min.segment.length = 0,
+                            direction = "both",
+                            label.padding = 0.15,
+                            point.padding = 0.25,
+                            box.padding = 0.15,
+                            nudge_x = -0.5,
+                            ) +
   scale_colour_manual(values = colour_palette) +
-  coord_cartesian(ylim = c(1500,5000)) +
-  facet_wrap(~state, nrow = 2) +
+  scale_fill_manual(values = colour_palette) +
+  scale_y_continuous(breaks = seq(1500,5000,500), labels = scales::label_dollar(big.mark = ',', suffix = "<br>per student")) +
+  scale_x_discrete(labels = c("'99",paste0("'0",seq(0,9)),paste0("'",seq(10,17)))) +
+  coord_cartesian(ylim = c(1500,5000), clip = 'on') +
+  facet_wrap(~state, nrow = 2, scales = "free_x") +
+  labs(subtitle = subtitle_text_02, caption = caption_text) +
   theme(
-    legend.position = "none"
+    axis.text = element_markdown(size = rel(1.7)),
+    plot.subtitle = element_textbox(margin = margin(t = 10, b = 15, l = 12,))
   )
+  
 
 
-# Agregar labels de Ivy 
-df_usd_per_student_states_unis %>%
-  mutate(label_ivy = case_when(is_it_ivy == "Ivy" ~ name,
-                               T ~ NA_character_)) %>%
-  ggplot(aes(x = year, y = avg_usd_per_student, colour = state)) +
-  geom_jitter(width = 0.1, size = 0.1, alpha = 0.1) +
-  geom_point(data = df_usd_per_student_states %>% filter(is_it_ivy=='Ivy'),
-             aes(x=year, y=avg_usd_per_student),
-             colour = 'black',
-             size = 1) +
-  ggrepel::geom_label_repel(aes(label=label_ivy)) +
-  scale_colour_manual(values = colour_palette) +
-  coord_cartesian(ylim = c(1500,5000)) +
-  facet_wrap(~state, nrow = 2) +
-  theme(
-    legend.position = "none"
-  )
+final_01 <- (p0 | p1) + plot_layout(widths = c(0.37,0.6))
+final <- final_01/p2 + 
+  plot_layout(heights = c(0.45,0.55)) +
+  plot_annotation(title = title_text_01)
 
 
+ggsave(filename = "./gallery_2022/2022_week-35_pell-award.png",
+       plot = final,
+       width = 11, height = 15, units = "in",
+       dpi = 300)
