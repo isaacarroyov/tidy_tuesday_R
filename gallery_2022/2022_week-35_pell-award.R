@@ -10,7 +10,7 @@ library(MetBrewer)
 pell <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-08-30/pell.csv')
 pell <- pell %>% janitor::clean_names()
 # En la data-vis intentare complementar el trabajo de @BlakeRobMills
-# Seran 3 visualizaciones, todas seran kdplots + jitterplots en una serie de tiempo
+# Seran 2 visualizaciones, todas seran kdplots + jitterplots en una serie de tiempo
 # Cada punto sera el AWARD/RECIPIENT para obtener un radio de USD per student
 # Con los kde plots se vera la distribucion del dinero por estudiante
 
@@ -39,100 +39,165 @@ pell <- pell %>% janitor::clean_names()
 # University of Pennsylvania (Pennsylvania)
 # Cornell University (New York)
 
+# Code from @BlakeRobMills
+ivy_league_unis <-  c("Harvard University", "Columbia University", "Columbia University in the City of New y",
+                      "Columbia University in the City of New York","Brown University",
+                      "University of Pennsylvania", "Yale University", "Princeton University",
+                      "Dartmouth College", "Cornell University")
+ivy_league_unis_abb <- c("Harvard","Columbia","Brown","UPenn","Yale","Princeton","Dartmouth","Cornell")
+
+
 # Filtrar only us states according to states.abb
 pell <- pell %>%
-  filter(state %in% state.abb)
+  filter(state %in% state.abb, award > 0, recipient > 0)
 
 
 # CASO 01 -> usd_per_student en us states
 # Encontrar los estados donde hayan Ivy Leagues
 ivy_league_states <- c("Massachusetts", "Connecticut",
                        "New Jersey","New York", "Rhode Island",
-                       "New Hampshire", "New York")
+                       "New Hampshire", "Pennsylvania")
 ivy_league_states_abb <- state.abb[match(ivy_league_states,state.name)]
 
 
 df_usd_per_student_states <- pell %>%
   group_by(state, year) %>%
-  summarise(sum_award = sum(award),
-            sum_recipient = sum(recipient)) %>%
+  mutate(usd_per_student = award/recipient) %>%
+  summarise(avg_usd_per_student = mean(usd_per_student)) %>%
   ungroup() %>%
-  mutate(usd_per_student = sum_award/sum_recipient,
-         is_it_ivy = case_when(state %in% ivy_league_states ~ "Ivy",
-                               T ~ NA_character_))
+  mutate(is_it_ivy = case_when(state %in% ivy_league_states_abb ~ "Ivy",
+                               T ~ NA_character_),
+         state = case_when(state == ivy_league_states_abb[1] ~ ivy_league_states[1],
+                           state == ivy_league_states_abb[2] ~ ivy_league_states[2],
+                           state == ivy_league_states_abb[3] ~ ivy_league_states[3],
+                           state == ivy_league_states_abb[4] ~ ivy_league_states[4],
+                           state == ivy_league_states_abb[5] ~ ivy_league_states[5],
+                           state == ivy_league_states_abb[6] ~ ivy_league_states[6],
+                           state == ivy_league_states_abb[7] ~ ivy_league_states[7],
+                           T ~ state),
+         year = factor(year))
 
 
 # CASO 02 -> usd_per_student en us states donde hay Ivy League
-# Code from @BlakeRobMills
-ivy_league_unis <-  c("Harvard University", "Columbia University", "Columbia University in the City of New y",
-                      "Columbia University in the City of New York","Brown University",
-                      "University of Pennsylvania", "Yale University", "Princeton University",
-                      "Dartmouth College", "Cornell University")
-
-# Relation between unis and states they belong to
-relation_states_ivy_abb <- pell %>%
-  filter(state %in% ivy_league_states_abb) %>%
-  mutate(name = case_when(name == ivy_league_unis[1] ~ "Harvard",
-                          name %in% ivy_league_unis[2:4] ~ "Columbia",
-                          name == ivy_league_unis[5] ~ "Brown",
-                          name == ivy_league_unis[6] ~ "UPenn",
-                          name == ivy_league_unis[7] ~ "Yale",
-                          name == ivy_league_unis[8] ~ "Princeton",
-                          name == ivy_league_unis[9] ~ "Dartmouth",
-                          name == ivy_league_unis[10] ~ "Cornell",
-                          T ~ name)) %>%
-  select(name, state) %>%
-  group_by(name) %>%
-  summarise(state_belong = max(state))
-
-
-
 df_usd_per_student_states_unis <- pell %>%
   filter(state %in% ivy_league_states_abb) %>%
-  mutate(name = case_when(name == ivy_league_unis[1] ~ "Harvard",
-                          name %in% ivy_league_unis[2:4] ~ "Columbia",
-                          name == ivy_league_unis[5] ~ "Brown",
-                          name == ivy_league_unis[6] ~ "UPenn",
-                          name == ivy_league_unis[7] ~ "Yale",
-                          name == ivy_league_unis[8] ~ "Princeton",
-                          name == ivy_league_unis[9] ~ "Dartmouth",
-                          name == ivy_league_unis[10] ~ "Cornell",
-                          T ~ name)) %>%
-  group_by(name, year) %>%
-  summarise(sum_award = sum(award),
-            sum_recipient = sum(recipient)) %>%
+  mutate(name = case_when(name == ivy_league_unis[1] ~ ivy_league_unis_abb[1],
+                          name %in% ivy_league_unis[2:4] ~ ivy_league_unis_abb[2],
+                          name == ivy_league_unis[5] ~ ivy_league_unis_abb[3],
+                          name == ivy_league_unis[6] ~ ivy_league_unis_abb[4],
+                          name == ivy_league_unis[7] ~ ivy_league_unis_abb[5],
+                          name == ivy_league_unis[8] ~ ivy_league_unis_abb[6],
+                          name == ivy_league_unis[9] ~ ivy_league_unis_abb[7],
+                          name == ivy_league_unis[10] ~ ivy_league_unis_abb[8],
+                          T ~ name),
+         state = case_when(state == ivy_league_states_abb[1] ~ ivy_league_states[1],
+                           state == ivy_league_states_abb[2] ~ ivy_league_states[2],
+                           state == ivy_league_states_abb[3] ~ ivy_league_states[3],
+                           state == ivy_league_states_abb[4] ~ ivy_league_states[4],
+                           state == ivy_league_states_abb[5] ~ ivy_league_states[5],
+                           state == ivy_league_states_abb[6] ~ ivy_league_states[6],
+                           state == ivy_league_states_abb[7] ~ ivy_league_states[7],
+                           T ~ NA_character_)) %>%
+  group_by(state, name, year) %>%
+  mutate(usd_per_student = award/recipient) %>%
+  summarise(avg_usd_per_student = mean(usd_per_student)) %>%
   ungroup() %>%
-  mutate(usd_per_student = sum_award/sum_recipient,
-         is_it_ivy = case_when(name %in% c("Harvard","Columbia","Brown","UPenn","Yale","Princeton","Dartmouth","Cornell") ~ "Ivy",
-                               T ~ NA_character_)) %>%
-  left_join(relation_states_ivy_abb, by = "name")
+  mutate(is_it_ivy = case_when(name %in% ivy_league_unis_abb ~ "Ivy",
+                               T ~ NA_character_),
+         year = factor(year))
+
+# Checar que todos los numeros de los estados cuadren
+pell %>%
+  filter(state %in% ivy_league_states_abb) %>%
+  group_by(state, year) %>%
+  mutate(test = award/recipient) %>%
+  summarise(avg_test = mean(test))
+
+
+df_usd_per_student_states %>%
+  filter(state %in% ivy_league_states)
+
+
+df_usd_per_student_states_unis %>%
+  group_by(state, year) %>%
+  summarise(avg_test = mean(avg_usd_per_student))
+
 
 
 # ------ DATA VISUALIZATION -------
 # Colour palette
+colour_palette <- met.brewer("Archambault", n = 7)
 
 # Text
-title_text <- "Hermosa grafica"
-subtitle_text <- "Hermosa descripcion"
-caption_text <- "Hermosa caption"
+# title_text <- "Hermosa grafica"
+# subtitle_text <- "Hermosa descripcion"
+# caption_text <- "Hermosa caption"
 
 # Typography
+font_add(family = 'body_font', regular = './../free_fonts/apfelGrotezk/ApfelGrotezk-Regular.otf')
+font_add_google('Playfair Display', 'title_font')
+showtext_auto()
 
 
+body_font <- 'body_font'
+title_font <- 'title_font'
+
+theme_set(theme_classic(base_family = body_font))
 
 # PLOT OF ALL STATES
-# set.seed(11)
-# p1 <- df %>%
-#   ggplot(aes(x=year, y=usd_per_student)) +
-#   ggdist::stat_slab(data = df, aes(x=year, y=usd_per_student)) +
+set.seed(11)
+# p1 <- df_usd_per_student_states %>%
+#   ggplot(aes(x=year, y=avg_usd_per_student)) +
+#   ggdist::stat_slab(data = df_usd_per_student_states, aes(x=year, y=avg_usd_per_student)) +
 #   geom_jitter(color = 'gray90', width = 0.1, size = 0.5) +
-#   geom_jitter(data = df %>% filter(is_it_ivy == "Ivy"),
-#               aes(x=year, y=usd_per_student, colour = state),
+#   geom_jitter(data = df_usd_per_student_states %>% filter(is_it_ivy == "Ivy"),
+#               aes(x=year, y=avg_usd_per_student, colour = state),
 #               width = 0.1) +
-#   scale_x_continuous(breaks = seq(1991,2017)) +
-#   labs(title = title_text, subtitle = subtitle_text, caption = caption_text) +
-#   theme_void() +
+#   scale_colour_manual(values = colour_palette) +
+#   coord_cartesian(ylim = c(0,5000)) +
+#   # labs(title = title_text, subtitle = subtitle_text, caption = caption_text) +
 #   theme(
 #     legend.position = "top",
+#     # Background
+#     # Title
+#     # Subtitle
+#     # Caption
+#     # Axis (text)
+#     # Axis (lines)
+#     # Grid
 #   )
+# 
+# 
+# p1
+# 
+# 
+# 
+# df_usd_per_student_states_unis %>%
+#   ggplot(aes(x=year, y=usd_per_student, colour = state)) +
+#   geom_jitter(width = 0.1, size = 0.1, alpha = 0.1) +
+#   geom_point(data = df_usd_per_student_states %>% filter(is_it_ivy=='Ivy'),
+#              aes(x=year, y=avg_usd_per_student),
+#              size = 1, colour = 'black',
+#              ) +
+#   scale_colour_manual(values = colour_palette) +
+#   # coord_cartesian(ylim = c(0,5000)) +
+#   facet_wrap(~state)
+
+
+# df_usd_per_student_states_unis %>%
+  # ggplot(aes(x=factor(year), y = usd_per_student, fill = state, colour = state)) +
+  # geom_violin(trim = F) +
+  # geom_jitter(alpha = 0.1, width = 0.1, size = 0.5) +
+  # geom_jitter(data = df_usd_per_student_states_unis %>% filter(is_it_ivy == "Ivy"),
+  #             aes(x=year, y=usd_per_student),
+  #             size = 1,
+  #             width = 0.1) +
+  # stat_summary(fun = median, geom = "point", size = 1, colour = 'black') +
+  # scale_fill_manual(values = colour_palette) +
+  # scale_colour_manual(values = colour_palette) +
+  # coord_cartesian(ylim = c(0,5000)) +
+  # facet_wrap(~state) +
+  # theme(
+  #   legend.position = "none",
+  # )
 
