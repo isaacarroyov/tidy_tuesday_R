@@ -5,6 +5,7 @@ library(ggtext)
 library(sysfonts)
 library(showtext)
 library(MetBrewer)
+library(patchwork)
 
 # LOAD DATA
 pell <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-08-30/pell.csv')
@@ -14,7 +15,7 @@ pell <- pell %>% janitor::clean_names()
 # Cada punto sera el AWARD/RECIPIENT para obtener un radio de USD per student
 # Con los kde plots se vera la distribucion del dinero por estudiante
 
-# Como se menciono, seran 3 visualizaciones
+# Como se menciono, seran 2 visualizaciones
 # 01 -> usd_per_student en los estados, los puntos que seran resaltados serán
 # los estados donde haya al menos una Ivy League
 # 02 -> usd_per_student en los estados con al menos una Ivy League. Los puntos 
@@ -144,60 +145,79 @@ title_font <- 'title_font'
 
 theme_set(theme_classic(base_family = body_font))
 
+
+
 # PLOT OF ALL STATES
 set.seed(11)
-# p1 <- df_usd_per_student_states %>%
-#   ggplot(aes(x=year, y=avg_usd_per_student)) +
-#   ggdist::stat_slab(data = df_usd_per_student_states, aes(x=year, y=avg_usd_per_student)) +
-#   geom_jitter(color = 'gray90', width = 0.1, size = 0.5) +
-#   geom_jitter(data = df_usd_per_student_states %>% filter(is_it_ivy == "Ivy"),
-#               aes(x=year, y=avg_usd_per_student, colour = state),
-#               width = 0.1) +
-#   scale_colour_manual(values = colour_palette) +
-#   coord_cartesian(ylim = c(0,5000)) +
-#   # labs(title = title_text, subtitle = subtitle_text, caption = caption_text) +
-#   theme(
-#     legend.position = "top",
-#     # Background
-#     # Title
-#     # Subtitle
-#     # Caption
-#     # Axis (text)
-#     # Axis (lines)
-#     # Grid
-#   )
-# 
-# 
-# p1
-# 
-# 
-# 
-# df_usd_per_student_states_unis %>%
-#   ggplot(aes(x=year, y=usd_per_student, colour = state)) +
-#   geom_jitter(width = 0.1, size = 0.1, alpha = 0.1) +
-#   geom_point(data = df_usd_per_student_states %>% filter(is_it_ivy=='Ivy'),
-#              aes(x=year, y=avg_usd_per_student),
-#              size = 1, colour = 'black',
-#              ) +
-#   scale_colour_manual(values = colour_palette) +
-#   # coord_cartesian(ylim = c(0,5000)) +
-#   facet_wrap(~state)
+p1 <- df_usd_per_student_states %>%
+  ggplot(aes(x=year, y=avg_usd_per_student)) +
+  ggdist::stat_slab(data = df_usd_per_student_states,
+                    aes(x=year, y=avg_usd_per_student),
+                    width = 1,
+                    trim = F) +
+  geom_jitter(color = 'gray90', width = 0.1, size = 0.5) +
+  geom_jitter(data = df_usd_per_student_states %>% filter(is_it_ivy == "Ivy"),
+              aes(x=year, y=avg_usd_per_student, colour = state),
+              width = 0.1) +
+  geom_textbox(data = tribble(~x,~y,~label,
+                              factor(2010), 2500, "This chart showcases the average amount of dollars per recipient a State received -from Pell Grants- in a given year. The highlighted dots are the states where there is at least one Ivy League school.",
+                              factor(2000), 4500, "The list of Ivy League schools includes some of the oldest educational institutions, with well-respected professors, generous research grants and significant financial aid resources: <span style='color:#88A0DC'><b>Connecticut</b></span>, <span style='color:#381A61'><b>Massachusetts</b></span>, <span style='color:#7C4C73'><b>New Hampshire</b></span>, <span style='color:#ED968B'><b>New Jersey</b></span>, <span style='color:#AB3329'><b>New York</b></span>, <span style='color:#E78429'><b>Pennsylvania</b></span> and <span style='color:#F9D14A'><b>Rhode Island</b></span>"),
+               aes(x=x,y=y,label=label),
+               halign = 0, hjust = 0,
+               fill = 'transparent',
+               ) +
+  scale_colour_manual(values = colour_palette) +
+  coord_cartesian(ylim = c(1500,5000)) #+ labs(title = title_text, subtitle = subtitle_text, caption = caption_text) +
 
 
-# df_usd_per_student_states_unis %>%
-  # ggplot(aes(x=factor(year), y = usd_per_student, fill = state, colour = state)) +
-  # geom_violin(trim = F) +
-  # geom_jitter(alpha = 0.1, width = 0.1, size = 0.5) +
-  # geom_jitter(data = df_usd_per_student_states_unis %>% filter(is_it_ivy == "Ivy"),
-  #             aes(x=year, y=usd_per_student),
-  #             size = 1,
-  #             width = 0.1) +
-  # stat_summary(fun = median, geom = "point", size = 1, colour = 'black') +
-  # scale_fill_manual(values = colour_palette) +
-  # scale_colour_manual(values = colour_palette) +
-  # coord_cartesian(ylim = c(0,5000)) +
-  # facet_wrap(~state) +
-  # theme(
-  #   legend.position = "none",
-  # )
+p1 +
+  theme(
+    legend.position = "none",
+    # Background
+    plot.background = element_rect(fill = '#FEFBF8'),
+    panel.background = element_blank(),
+    # Title
+    # Subtitle
+    # Caption
+    # Axis (text)
+    # Axis (lines)
+    # Grid
+  )
+
+set.seed(11)
+df_usd_per_student_states_unis %>%
+  ggplot(aes(x = year, y = avg_usd_per_student, colour = state)) +
+  geom_jitter(width = 0.1, size = 0.1, alpha = 0.1) +
+  # stat_summary(func = 'mean', geom = "point", size = 1, colour = 'black') +
+  geom_point(data = df_usd_per_student_states %>% filter(is_it_ivy=='Ivy'),
+             aes(x=year, y=avg_usd_per_student),
+             colour = 'black',
+             size = 1
+             ) +
+  scale_colour_manual(values = colour_palette) +
+  coord_cartesian(ylim = c(1500,5000)) +
+  facet_wrap(~state, nrow = 2) +
+  theme(
+    legend.position = "none"
+  )
+
+
+# Agregar labels de Ivy 
+df_usd_per_student_states_unis %>%
+  mutate(label_ivy = case_when(is_it_ivy == "Ivy" ~ name,
+                               T ~ NA_character_)) %>%
+  ggplot(aes(x = year, y = avg_usd_per_student, colour = state)) +
+  geom_jitter(width = 0.1, size = 0.1, alpha = 0.1) +
+  geom_point(data = df_usd_per_student_states %>% filter(is_it_ivy=='Ivy'),
+             aes(x=year, y=avg_usd_per_student),
+             colour = 'black',
+             size = 1) +
+  ggrepel::geom_label_repel(aes(label=label_ivy)) +
+  scale_colour_manual(values = colour_palette) +
+  coord_cartesian(ylim = c(1500,5000)) +
+  facet_wrap(~state, nrow = 2) +
+  theme(
+    legend.position = "none"
+  )
+
 
