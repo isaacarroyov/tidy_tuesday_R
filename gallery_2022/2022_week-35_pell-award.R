@@ -133,7 +133,7 @@ colour_palette <- met.brewer("Archambault", n = 7)
 title_text_01 <- "Pell Grants: Where are the Ivy League schools?"
 subtitle_text_01 <- "First, for those unfamiliar with these terms (like me), let's start with <b>Ivy League</b>. These universities/colleges are considered the most sought-after institutions of higher learning in the country and worldwide. Ivy League schools have been known for their highly selective admissions process, academic excellence and promising career opportunities for those who attend (well-rounded student-athletes, future presidents, Nobel Prize winners and other high-achieving graduates).<br><br>Secondly, The <b>Pell Grant</b> is a form of need-based federal financial aid that typically does not have to be repaid, which makes it highly desirable. It is awarded by the U.S. Department of Education to help eligible low-income students pay for college costs, including tuition, fees, room and board, and other educational expenses.<br><br>The data visualization showcases what public data informs about the money the universities/colleges (who received Pell Grants) and states get and the number of recipients, focusing on the Ivy League schools."
 subtitle_text_02 <- "The following chart expands the view of the previous one by displaying the distribution of the average amount of dollars per recipient -from Pell Grants- the universities/colleges received in a given year. The bigger dots are the ones from the previous visualization (the average amount of dollars per recipient a U.S. State received in a given year). The highlighted points are the Ivy League schools."
-caption_text <- "_Note:_ Due to the extensive and diverse names of schools, simplifying them was laborious. So, some schools are written differently, leading to unprecise averages. It was easier to focus on Ivy League schools.<br>Designed by Isaac Arroyo (@unisaacarroyov on twitter). | #TidyTuesday Week 35: Pell Award | Data source: US Department of Education"
+caption_text <- "_Note:_ Due to the extensive and diverse names of schools, simplifying them was laborious. So, some schools are written differently, leading to unprecise averages. It was easier to focus on Ivy League schools.<br><br>Designed by Isaac Arroyo (@unisaacarroyov on twitter).<br>#TidyTuesday Week 35: Pell Award.<br>Data source: US Department of Education"
 
 
 
@@ -160,26 +160,23 @@ theme_update(
                                size = rel(9),
                                width = unit(10,'in'),
                                padding = margin(0,0,0,0),
-                               margin = margin(t =0.25, b = 0, unit = 'in')
-                               ),
+                               margin = margin(t =0.25, b = 0, unit = 'in')),
   # Subtitle
   plot.subtitle = element_textbox(size = rel(3.5),
                                   lineheight = 0.4,
                                   width = unit(10,'in'),
                                   padding = margin(0,0,0,0),
-                                  margin = margin(t = 0.35, b = 0.35, unit = 'in')
-                                  ),
+                                  margin = margin(t = 0.35, b = 0.35, unit = 'in')),
   # Caption
   plot.caption.position = "plot",
   plot.caption = element_textbox(face = 'bold',
-                                 size = rel(2),
+                                 size = rel(2.7),
                                  lineheight = 0.4,
-                                 width = unit(10,'in'),
+                                 width = unit(6.5,'in'),
                                  halign = 0.5,
                                  hjust = 0.5,
                                  padding = margin(0,0,0,0),
-                                 margin = margin(t = 15, b = 10),
-                                 ),
+                                 margin = margin(t = 20, b = 10)),
   # Axis (text)
   axis.title = element_blank(),
   axis.text = element_markdown(size = rel(3), lineheight = 0.3),
@@ -193,9 +190,8 @@ theme_update(
   strip.background = element_blank(),
   strip.text = element_markdown(face = 'bold', family = title_font,
                                 halign = 0.5, hjust = 0.5,
-                                size = rel(4)
-                                )
-)
+                                size = rel(4))
+  )
 
 
 # ------ P0 ------
