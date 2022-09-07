@@ -132,6 +132,7 @@ colour_palette <- met.brewer("Archambault", n = 7)
 # Text
 title_text_01 <- "Pell Grants: Where are the Ivy League schools?"
 subtitle_text_01 <- "First, for those unfamiliar with these terms (like me), let's start with <b>Ivy League</b>. These universities/colleges are considered the most sought-after institutions of higher learning in the country and worldwide. Ivy League schools have been known for their highly selective admissions process, academic excellence and promising career opportunities for those who attend (well-rounded student-athletes, future presidents, Nobel Prize winners and other high-achieving graduates).<br><br>Secondly, The <b>Pell Grant</b> is a form of need-based federal financial aid that typically does not have to be repaid, which makes it highly desirable. It is awarded by the U.S. Department of Education to help eligible low-income students pay for college costs, including tuition, fees, room and board, and other educational expenses.<br><br>The data visualization showcases what public data informs about the money the universities/colleges (who received Pell Grants) and states get and the number of recipients, focusing on the Ivy League schools."
+title_text_02 <- "Here are the Ivy League schools..."
 subtitle_text_02 <- "The following chart expands the view of the previous one by displaying the distribution of the average amount of dollars per recipient -from Pell Grants- the universities/colleges received in a given year. The bigger dots are the ones from the previous visualization (the average amount of dollars per recipient a U.S. State received in a given year). The highlighted points are the Ivy League schools."
 caption_text <- "_Note:_ Due to the extensive and diverse names of schools, simplifying them was laborious. So, some schools are written differently, leading to unprecise averages. It was easier to focus on Ivy League schools.<br><br>Designed by Isaac Arroyo (@unisaacarroyov on twitter).<br>#TidyTuesday Week 35: Pell Award.<br>Data source: US Department of Education"
 
@@ -258,16 +259,15 @@ p1 <- df_usd_per_student_states %>%
   scale_x_discrete(labels = c("'99",paste0("'0",seq(0,9)),paste0("'",seq(10,17)))) +
   coord_cartesian(ylim = c(1500,5000), clip = 'off')
 
-# # ------ P2 ------
+# ------ P2 ------
 set.seed(11)
 p2 <- df_usd_per_student_states_unis %>%
   ggplot(aes(x = year, y = avg_usd_per_student)) +
   geom_jitter(aes(colour = state), width = 0.1,
               size = 1,
               shape = 21,
-              colour = 'gray90',
               fill = 'white',
-              alpha = 0.1) +
+              alpha = 0.03) +
   geom_jitter(data = df_usd_per_student_states_unis %>% filter(is_it_ivy=='Ivy', name != "Cornell"),
               aes(x = year, y = avg_usd_per_student, colour = state),
               width = 0.1,
@@ -306,21 +306,23 @@ p2 <- df_usd_per_student_states_unis %>%
   scale_x_discrete(labels = c("'99",paste0("'0",seq(0,9)),paste0("'",seq(10,17)))) +
   coord_cartesian(ylim = c(1500,5000), clip = 'on') +
   facet_wrap(~state, nrow = 2, scales = "free_x") +
-  labs(subtitle = subtitle_text_02, caption = caption_text) +
+  labs(title =title_text_02, subtitle = subtitle_text_02, caption = caption_text) +
   theme(
     axis.text = element_markdown(size = rel(1.7)),
-    plot.subtitle = element_textbox(margin = margin(t = 10, b = 15, l = 12,))
+    plot.title = element_textbox(size = rel(7)),
+    plot.subtitle = element_textbox(margin = margin(t = 10, b = 15, l = 12,)),
   )
   
 
-
+# ------ Combine plots -------
 final_01 <- (p0 | p1) + plot_layout(widths = c(0.37,0.6))
 final <- final_01/p2 + 
   plot_layout(heights = c(0.45,0.55)) +
   plot_annotation(title = title_text_01)
 
-
+# ------- Save plots -------
 ggsave(filename = "./gallery_2022/2022_week-35_pell-award.png",
        plot = final,
        width = 11, height = 15, units = "in",
        dpi = 300)
+print("Done")
