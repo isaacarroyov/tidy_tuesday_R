@@ -1,4 +1,4 @@
-# Week 35 - Pell Awards
+# ------ Week 35 - Pell Awards ------
 library(dplyr)
 library(ggplot2)
 library(ggtext)
@@ -274,14 +274,14 @@ p2 <- df_usd_per_student_states_unis %>%
               shape = 21,
               fill = 'white',
               stroke = 0.75,
-              size = 1) +
+              size = 1.3) +
   geom_jitter(data = df_usd_per_student_states_unis %>% filter(is_it_ivy=='Ivy', name == "Cornell"),
               aes(x = year, y = avg_usd_per_student, colour = state),
               width = 0.1,
               shape = 23,
               fill = 'white',
               stroke = 0.75,
-              size = 1) +
+              size = 1.3) +
   geom_point(data = df_usd_per_student_states %>% filter(is_it_ivy=='Ivy'),
              aes(x=year, y=avg_usd_per_student, colour = state),
              size = 2) +
@@ -326,3 +326,4 @@ ggsave(filename = "./gallery_2022/2022_week-35_pell-award.png",
        width = 11, height = 15, units = "in",
        dpi = 300)
 print("Done")
+
