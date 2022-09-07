@@ -43,3 +43,8 @@ Contributions to the #TidyTuesday challenge created by [@R4DScommunity](https://
 [**Code**](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/gallery_2022/2022_week-34_chips.R)
 
 ![](./gallery_2022/2022_week-34_chips.png)
+
+### Week 35: Pell Award
+[**Code**](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/gallery_2022/2022_week-35_pell-award.R)
+
+![](./gallery_2022/2022_week-35_pell-award.png)
