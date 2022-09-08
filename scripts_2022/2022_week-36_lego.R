@@ -83,6 +83,11 @@ v_70s <- df_colours_decades %>%
   pull(hex) %>%
   unique()
 
+v_80s <- df_colours_decades %>%
+  filter(decade == "80's") %>%
+  pull(hex) %>%
+  unique()
+
 v_90s <- df_colours_decades %>%
   filter(decade == "90's") %>%
   pull(hex) %>%
