@@ -53,3 +53,9 @@ Contributions to the #TidyTuesday challenge created by [@R4DScommunity](https://
 [**Code**](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/scripts_2022/2022_week-36_lego.R)
 
 ![](./gallery_2022/2022_week-36_lego.png)
+
+### Week 37: Big Foot
+[**Code**](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/scripts_2022/2022_week-37_bigfoot.R)
+
+
+![](./gallery_2022/2022_week-37_bigfoot.png)
