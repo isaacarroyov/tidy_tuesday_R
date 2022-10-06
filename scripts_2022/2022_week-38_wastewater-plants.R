@@ -76,11 +76,11 @@ df_wwtp_mex_cat_perc_dataviz <- df_wwtp_mex_cat_perc %>%
   group_by(state_mex) %>%
   mutate(del_total = sum(freq)) %>% ungroup() %>%
   mutate(more_info_es = if_else(cumple_min_dilusion_factor_es != "% de PTAR que cumplen el mínimo DF de acuerdo con la EMA",
-                                true = glue::glue("{round(perc_del_total,2)}%, es decir {freq} de {del_total}"),
+                                true = glue::glue("<b>{round(perc_del_total,2)}%, es decir {freq} de {del_total}</b>"),
                                 false = NA_character_,
                                 missing = NA_character_),
          more_info_en = if_else(cumple_min_dilusion_factor_en != "% of WWTP that meet the minimum DF according to the EMA",
-                                true = glue::glue("{round(perc_del_total,2)}%, meaning {freq} out of {del_total}"),
+                                true = glue::glue("<b>{round(perc_del_total,2)}%, meaning {freq} out of {del_total}</b>"),
                                 false = NA_character_,
                                 missing = NA_character_))
 
@@ -111,14 +111,15 @@ p1 <- df_wwtp_mex_cat_perc_dataviz %>%
              color = cumple_min_dilusion_factor_en,
              label = more_info_en)) + 
   geom_col() +
-  geom_textbox(size = 2, 
+  geom_textbox(family = body_font,
+               size = rel(5.5),
+               lineheight = 0.3,
                width = unit(50, "pt"), 
                box.padding = unit(rep(2.5,4),"pt"),
                box.r = unit(3,"pt"),
                fill = 'white',
                nudge_x = 5,
-               hjust = 0
-               ) +
+               hjust = 0) +
   facet_wrap(~cumple_min_dilusion_factor_en,
              labeller = labeller(cumple_min_dilusion_factor_en = label_wrap_gen(25)) #TIL (Today I Learned)
              ) +
@@ -191,7 +192,9 @@ p2 <- df_wwtp_mex_cat_perc_dataviz %>%
              color = cumple_min_dilusion_factor_es,
              label = more_info_es)) + 
   geom_col() +
-  geom_textbox(size = 2, 
+  geom_textbox(family = body_font,
+               size = rel(5.5),
+               lineheight = 0.3,
                width = unit(50, "pt"), 
                box.padding = unit(rep(2.5,4),"pt"),
                box.r = unit(3,"pt"),
