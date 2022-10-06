@@ -68,13 +68,29 @@ df_wwtp_mex_cat_perc <- df_wwtp_mex_cat %>%
 
 
 # ------ DATA VISUALIZATION ------
+# ------ Data wrangling especially for the visualization ------
+df_wwtp_mex_cat_perc_dataviz <- df_wwtp_mex_cat_perc %>%
+  mutate(state_mex = fct_reorder(state_mex, # Ordenar eje y por numero de wwtp
+                                 freq, sum)) %>% 
+  # Mostrar mas informacion -> cuantas wwtp del total no cumplen/no hay info
+  group_by(state_mex) %>%
+  mutate(del_total = sum(freq)) %>% ungroup() %>%
+  mutate(more_info_es = if_else(cumple_min_dilusion_factor_es != "% de PTAR que cumplen el mínimo DF de acuerdo con la EMA",
+                                true = glue::glue("{round(perc_del_total,2)}%, es decir {freq} de {del_total}"),
+                                false = NA_character_,
+                                missing = NA_character_),
+         more_info_en = if_else(cumple_min_dilusion_factor_en != "% of WWTP that meet the minimum DF according to the EMA",
+                                true = glue::glue("{round(perc_del_total,2)}%, meaning {freq} out of {del_total}"),
+                                false = NA_character_,
+                                missing = NA_character_))
+
 # ------ Title, subtitle and caption texts ------
 title_text_en <- "Dilution Factor in Mexican wastewater treatment plants (WWTPs)"
-subtitle_text_en <- "The <b>dilution factor (DF)</b> is the ratio between the natural discharge of the receiving waterbody and the WWTP effluent discharge, which has been used to determine ecological risks originating from WWTPs. Dilution factors have been used to predict potential exposure to down-the-drain chemicals from population density, which at a regional level, can help prevent negative effects by identifying zones of high contaminant concentrations. <b>The minimum dilution factor recommended by the European Medicines Agency (EMA) for environmental risk assessments of medicinal products for human use is 10</b>.<br><br>The data visualization shows the percentage of WWTPs for each Mexican state that...<br>&bull; meet the minimum DF according to the EMA<br>&bull; do not meet the minimum DF according to the EMA<br>&bull; do not have information related to the DF<br><b>Focusing more on the last two categories.</b>"
+subtitle_text_en <- "The <b>dilution factor (DF)</b> is the ratio between the natural discharge of the receiving waterbody and the WWTP effluent discharge, which has been used to determine ecological risks originating from WWTPs. Dilution factors have been used to predict potential exposure to down-the-drain chemicals from population density, which at a regional level, can help prevent negative effects by identifying zones of high contaminant concentrations. <b>The minimum dilution factor recommended by the European Medicines Agency (EMA) for environmental risk assessments of medicinal products for human use is 10</b>.<br><br>The data visualization shows the percentage of WWTPs for each Mexican state that...<br>&bull; <span style='color:#696E7C'><b>meet the minimum DF according to the EMA</b></span><br>&bull; <span style='color:#6D7128'><b>do not meet the minimum DF according to the EMA</b></span><br>&bull; <span style='color:#006475'><b>do not have information related to the DF</b></span><br><b>Focusing more on the last two categories.</b>"
 caption_text_en <- 'Designed by Isaac Arroyo (@unisaacarroyov on twitter)<br>#TidyTuesday Week 38: Hydro Wastewater plants<br>Data provided by Ehalt Macedo, H., Lehner, B., Nicell, J., Grill, G., Li, J., Limtong, A., and Shakya, R. in their article _"Distribution and characteristics of wastewater treatment plants within the global river network"_'
 
 title_text_es <- "Factor de dilución en las plantas de tratamiento de aguas residuales (PTAR) mexicanas"
-subtitle_text_es <- "El <b>factor de dilución (DF)</b> es la relación entre la descarga natural del cuerpo de agua receptor y la descarga del efluente de la PTAR, que se ha utilizado para determinar los riesgos ecológicos originados por las PTAR. Los factores de dilución se han utilizado para predecir la exposición potencial a las sustancias químicas del desagüe a partir de la densidad de población, lo que, a nivel regional, puede ayudar a prevenir los efectos negativos mediante la identificación de zonas de altas concentraciones de contaminantes. El <b>factor de dilución mínimo recomendado por la Agencia Europea de Medicamentos (EMA) para la evaluación del riesgo medioambiental de los medicamentos de uso humano es de 10</b>.<br><br>La visualización de datos muestra el porcentaje de PTAR de cada estado mexicano que...<br>&bull; cumplen el DF mínimo según la EMA<br>&bull; no cumplen con los DF mínimos según la EMA<br>&bull; no hay información relacinada al DF<br><b>Centrándose más en las dos últimas categorías</b>."
+subtitle_text_es <- "El <b>factor de dilución (DF)</b> es la relación entre la descarga natural del cuerpo de agua receptor y la descarga del efluente de la PTAR, que se ha utilizado para determinar los riesgos ecológicos originados por las PTAR. Los factores de dilución se han utilizado para predecir la exposición potencial a las sustancias químicas del desagüe a partir de la densidad de población, lo que, a nivel regional, puede ayudar a prevenir los efectos negativos mediante la identificación de zonas de altas concentraciones de contaminantes. El <b>factor de dilución mínimo recomendado por la Agencia Europea de Medicamentos (EMA) para la evaluación del riesgo medioambiental de los medicamentos de uso humano es de 10</b>.<br><br>La visualización de datos muestra el porcentaje de PTAR de cada estado mexicano que...<br>&bull; <span style='color:#696E7C'><b>cumplen el DF mínimo según la EMA</b></span><br>&bull; <span style='color:#6D7128'><b>no cumplen con los DF mínimos según la EMA</b></span><br>&bull; <span style='color:#006475'><b>no hay información relacinada al DF</b></span><br><b>Centrándose más en las dos últimas categorías</b>."
 caption_text_es <- 'Diseño por Isaac Arroyo (@unisaacarroyov en twitter)<br>#TidyTuesday Week 38: Hydro Wastewater plants<br>Datos por Ehalt Macedo, H., Lehner, B., Nicell, J., Grill, G., Li, J., Limtong, A., y Shakya, R. en su artículo _"Distribution and characteristics of wastewater treatment plants within the global river network"_'
 
 # ------ Typography ------
@@ -85,23 +101,10 @@ showtext_auto()
 title_font <- "title_font"
 body_font <- "body_font"
 
-# ------ Data wrangling especially for the visualization ------
-df_wwtp_mex_cat_perc_dataviz <- df_wwtp_mex_cat_perc %>%
-  mutate(state_mex = fct_reorder(state_mex, # Ordenar eje y por numero de wwtp
-                                 freq, sum)) %>% 
-  # Mostrar mas informacion -> cuantas wwtp del total no cumplen/no hay info
-  group_by(state_mex) %>%
-  mutate(del_total = sum(freq)) %>% ungroup() %>%
-  mutate(more_info_es = if_else(cumple_min_dilusion_factor_es != "% de PTAR que cumplen el mínimo DF de acuerdo con la EMA",
-                             true = glue::glue("{round(perc_del_total,2)}%, es decir {freq} de {del_total}"),
-                             false = NA_character_,
-                             missing = NA_character_),
-         more_info_en = if_else(cumple_min_dilusion_factor_en != "% of WWTP that meet the minimum DF according to the EMA",
-                             true = glue::glue("{round(perc_del_total,2)}%, meaning {freq} out of {del_total}"),
-                             false = NA_character_,
-                             missing = NA_character_))
+# ------ Colour palette ------
+colour_palette <- c(NatParksPalettes::natparks.pals(name = "Banff", n = 8, direction = -1))[c(1,4,8)]
 
-
+# ------ DataViz english ------
 p1 <- df_wwtp_mex_cat_perc_dataviz %>%
   ggplot(aes(y = state_mex, x = perc_del_total,
              fill = cumple_min_dilusion_factor_en,
@@ -116,13 +119,14 @@ p1 <- df_wwtp_mex_cat_perc_dataviz %>%
                nudge_x = 5,
                hjust = 0
                ) +
-  # geom_vline(xintercept = 150, colour = 'black') +
   facet_wrap(~cumple_min_dilusion_factor_en,
              labeller = labeller(cumple_min_dilusion_factor_en = label_wrap_gen(25)) #TIL (Today I Learned)
              ) +
   coord_cartesian(clip = "off", xlim = c(0,140)) +
   scale_x_continuous(breaks = seq(25,100,by=25),
-                     labels = scales::label_percent(scale = 1)) + 
+                     labels = scales::label_percent(scale = 1)) +
+  scale_fill_manual(values = colour_palette) +
+  scale_colour_manual(values = colour_palette) +
   labs(title = title_text_en,
        subtitle = subtitle_text_en,
        caption = caption_text_en) +
@@ -130,7 +134,8 @@ p1 <- df_wwtp_mex_cat_perc_dataviz %>%
     # Legend
     legend.position = "none",
     # background
-    panel.background = element_rect(fill = 'transparent'),
+    panel.background = element_rect(fill = 'transparent', color = 'transparent'),
+    plot.background = element_rect(fill = "#FFFBF5", colour = "#FFFBF5"),
     # grid
     panel.grid = element_blank(),
     panel.grid.major.x = element_line(colour = 'gray50',
@@ -166,7 +171,7 @@ p1 <- df_wwtp_mex_cat_perc_dataviz %>%
     # Axes
     axis.title = element_blank(),
     axis.text.y = element_text(family = body_font,
-                               size = rel(2.75),
+                               size = rel(3),
                                lineheight = 0.1,
                                face = 'bold'),
     axis.text.x = element_text(family = body_font,
@@ -179,6 +184,7 @@ ggsave(filename = "./gallery_2022/2022_week-38_hydro-wwtp.png",
        plot = p1,
        width = 8.5, height = 11, units = "in")
 
+# ------ DataViz Español ------
 p2 <- df_wwtp_mex_cat_perc_dataviz %>%
   ggplot(aes(y = state_mex, x = perc_del_total,
              fill = cumple_min_dilusion_factor_es,
@@ -191,8 +197,7 @@ p2 <- df_wwtp_mex_cat_perc_dataviz %>%
                box.r = unit(3,"pt"),
                fill = 'white',
                nudge_x = 5,
-               hjust = 0
-  ) +
+               hjust = 0) +
   # geom_vline(xintercept = 150, colour = 'black') +
   facet_wrap(~cumple_min_dilusion_factor_es,
              labeller = labeller(cumple_min_dilusion_factor_es = label_wrap_gen(25)) #TIL (Today I Learned)
@@ -200,6 +205,8 @@ p2 <- df_wwtp_mex_cat_perc_dataviz %>%
   coord_cartesian(clip = "off", xlim = c(0,140)) +
   scale_x_continuous(breaks = seq(25,100,by=25),
                      labels = scales::label_percent(scale = 1)) + 
+  scale_fill_manual(values = colour_palette) +
+  scale_colour_manual(values = colour_palette) +
   labs(title = title_text_es,
        subtitle = subtitle_text_es,
        caption = caption_text_es) +
@@ -207,7 +214,8 @@ p2 <- df_wwtp_mex_cat_perc_dataviz %>%
     # Legend
     legend.position = "none",
     # background
-    panel.background = element_rect(fill = 'transparent'),
+    panel.background = element_rect(fill = 'transparent', color = 'transparent'),
+    plot.background = element_rect(fill = "#FFFBF5", colour = "#FFFBF5"),
     # grid
     panel.grid = element_blank(),
     panel.grid.major.x = element_line(colour = 'gray50',
@@ -243,7 +251,7 @@ p2 <- df_wwtp_mex_cat_perc_dataviz %>%
     # Axes
     axis.title = element_blank(),
     axis.text.y = element_text(family = body_font,
-                               size = rel(2.75),
+                               size = rel(3),
                                lineheight = 0.1,
                                face = 'bold'),
     axis.text.x = element_text(family = body_font,
