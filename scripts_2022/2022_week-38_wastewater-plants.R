@@ -1,8 +1,11 @@
 # TidyTuesday Week 38: Wastewater plants
 library(tidyverse)
 library(ggtext)
+library(sysfonts)
+library(showtextdb)
+library(showtext)
 # devtools::install_github("davidsjoberg/ggsankey")
-library(ggsankey)
+# library(ggsankey)
 library(sf)
 library(geojsonsf)
 
@@ -44,38 +47,60 @@ df_wwtp_mex_cat <- df_wwtp_mex %>%
          cumple_min_dilusion_factor = if_else(condition = dilusion_factor > 10,
                                               true = 1,
                                               false = 2,
-                                              missing = 3),
-         cumple_min_dilusion_factor = ordered(cumple_min_dilusion_factor, 
-                                              levels = c(1,2,3),
-                                              labels = c("% de plantas que si cumplen el mínimo de acuerdo con la EMA",
-                                                         "% de plantas que no cumplen el mínimo de acuerdo con la EMA",
-                                                         "% de plantas de las que no se tiene información")))
+                                              missing = 3))
 
 
 # Encontrar proporciones
 df_wwtp_mex_cat_perc <- df_wwtp_mex_cat %>%
   group_by(state_mex, cumple_min_dilusion_factor) %>%
   summarise(freq = n()) %>% ungroup(cumple_min_dilusion_factor) %>%
-  mutate(perc_del_total = (freq/sum(freq)) * 100) %>% ungroup() 
+  mutate(perc_del_total = (freq/sum(freq)) * 100) %>% ungroup() %>%
+  mutate(cumple_min_dilusion_factor_en = ordered(cumple_min_dilusion_factor, 
+                                                 levels = c(1,2,3),
+                                                 labels = c("% of WWTP that meet the minimum DF according to the EMA",
+                                                            "% of WWTP that do not meet the minimum DF according to the EMA",
+                                                            "% of WWTP that do not have information related to the DF")),
+         cumple_min_dilusion_factor_es = ordered(cumple_min_dilusion_factor, 
+                                                 levels = c(1,2,3),
+                                                 labels = c("% de PTAR que cumplen el mínimo DF de acuerdo con la EMA",
+                                                            "% de PTAR que no cumplen el mínimo DF de acuerdo con la EMA",
+                                                            "% de PTAR de las que no se tiene información")))
 
 
 # ------ DATA VISUALIZATION ------
+# ------ Title, subtitle and caption texts ------
+title_text_en <- "Dilution Factor in Mexican wastewater treatment plants (WWTPs)"
+subtitle_text_en <- "The <b>dilution factor (DF)</b> is the ratio between the natural discharge of the receiving waterbody and the WWTP effluent discharge, which has been used to determine ecological risks originating from WWTPs. Dilution factors have been used to predict potential exposure to down-the-drain chemicals from population density, which at a regional level, can help prevent negative effects by identifying zones of high contaminant concentrations. <b>The minimum dilution factor recommended by the European Medicines Agency (EMA) for environmental risk assessments of medicinal products for human use is 10</b>.<br><br>The data visualization shows the percentage of WWTPs for each Mexican state that...<br>&bull; meet the minimum DF according to the EMA<br>&bull; do not meet the minimum DF according to the EMA<br>&bull; do not have information related to the DF<br><b>Focusing more on the last two categories.</b>"
+caption_text_en <- 'Designed by Isaac Arroyo (@unisaacarroyov on twitter)<br>#TidyTuesday Week 38: Hydro Wastewater plants<br>Data provided by Ehalt Macedo, H., Lehner, B., Nicell, J., Grill, G., Li, J., Limtong, A., and Shakya, R. in their article _"Distribution and characteristics of wastewater treatment plants within the global river network"_'
+
+title_text_es <- "Factor de dilución en las plantas de tratamiento de aguas residuales (PTAR) mexicanas"
+subtitle_text_es <- "El <b>factor de dilución (DF)</b> es la relación entre la descarga natural del cuerpo de agua receptor y la descarga del efluente de la PTAR, que se ha utilizado para determinar los riesgos ecológicos originados por las PTAR. Los factores de dilución se han utilizado para predecir la exposición potencial a las sustancias químicas del desagüe a partir de la densidad de población, lo que, a nivel regional, puede ayudar a prevenir los efectos negativos mediante la identificación de zonas de altas concentraciones de contaminantes. El <b>factor de dilución mínimo recomendado por la Agencia Europea de Medicamentos (EMA) para la evaluación del riesgo medioambiental de los medicamentos de uso humano es de 10</b>.<br><br>La visualización de datos muestra el porcentaje de PTAR de cada estado mexicano que...<br>&bull; cumplen el DF mínimo según la EMA<br>&bull; no cumplen con los DF mínimos según la EMA<br>&bull; no hay información relacinada al DF<br><br>Centrándose más en las dos últimas categorías."
+caption_text_es <- 'Diseño por Isaac Arroyo (@unisaacarroyov en twitter)<br>#TidyTuesday Week 38: Hydro Wastewater plants<br>Datos por Ehalt Macedo, H., Lehner, B., Nicell, J., Grill, G., Li, J., Limtong, A., y Shakya, R. en su artículo _"Distribution and characteristics of wastewater treatment plants within the global river network"_'
+
+
+
+
 df_wwtp_mex_cat_perc_dataviz <- df_wwtp_mex_cat_perc %>%
   mutate(state_mex = fct_reorder(state_mex, # Ordenar eje y por numero de wwtp
                                  freq, sum)) %>% 
   # Mostrar mas informacion -> cuantas wwtp del total no cumplen/no hay info
   group_by(state_mex) %>%
   mutate(del_total = sum(freq)) %>% ungroup() %>%
-  mutate(more_info = if_else(cumple_min_dilusion_factor != "% de plantas que si cumplen el mínimo de acuerdo con la EMA",
+  mutate(more_info_es = if_else(cumple_min_dilusion_factor_es != "% de PTAR que cumplen el mínimo DF de acuerdo con la EMA",
                              true = glue::glue("{round(perc_del_total,2)}%, es decir {freq} de {del_total}"),
+                             false = NA_character_,
+                             missing = NA_character_),
+         more_info_en = if_else(cumple_min_dilusion_factor_en != "% of WWTP that meet the minimum DF according to the EMA",
+                             true = glue::glue("{round(perc_del_total,2)}%, meaning {freq} out of {del_total}"),
                              false = NA_character_,
                              missing = NA_character_))
 
+
 p1 <- df_wwtp_mex_cat_perc_dataviz %>%
   ggplot(aes(y = state_mex, x = perc_del_total,
-             fill = cumple_min_dilusion_factor,
-             color = cumple_min_dilusion_factor,
-             label = more_info)) + 
+             fill = cumple_min_dilusion_factor_en,
+             color = cumple_min_dilusion_factor_en,
+             label = more_info_en)) + 
   geom_col() +
   geom_textbox(size = 2, 
                width = unit(50, "pt"), 
@@ -86,15 +111,15 @@ p1 <- df_wwtp_mex_cat_perc_dataviz %>%
                hjust = 0
                ) +
   # geom_vline(xintercept = 150, colour = 'black') +
-  facet_wrap(~cumple_min_dilusion_factor,
-             labeller = labeller(cumple_min_dilusion_factor = label_wrap_gen(25)) #TIL (Today I Learned)
+  facet_wrap(~cumple_min_dilusion_factor_en,
+             labeller = labeller(cumple_min_dilusion_factor_en = label_wrap_gen(25)) #TIL (Today I Learned)
              ) +
   coord_cartesian(clip = "off", xlim = c(0,140)) +
   scale_x_continuous(breaks = seq(25,100,by=25),
                      labels = scales::label_percent(scale = 1)) + 
-  labs(title = "¿Cómo se trata el agua?",
-       subtitle = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer in dui malesuada, ornare mi non, pharetra ex. Maecenas porttitor, enim quis viverra pellentesque, magna diam luctus odio, at sollicitudin elit massa ac sapien. Nam a egestas purus, aliquet vestibulum neque. Vivamus fringilla felis at mattis pharetra. Quisque vitae ex et.",
-       caption = "_**Nota**: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed placerat posuere ipsum, in facilisis magna luctus eu. Maecenas faucibus sapien._ <br><br>Diseño por Isaac Arroyo (@unisaacarroyov en twitter)<br>#TidyTuesday Week 38: Hydro Wastewater plants") +
+  labs(title = title_text_en,
+       subtitle = subtitle_text_en,
+       caption = caption_text_en) +
   theme(
     # Legend
     legend.position = "none",
@@ -111,7 +136,7 @@ p1 <- df_wwtp_mex_cat_perc_dataviz %>%
     # Caption
     plot.caption.position = "plot",
     plot.caption = element_textbox(hjust = 0,
-                                   unit(7.5,"in")),
+                                   width= unit(7.5,"in")),
     # Facets
     strip.text = element_text(size = 10, hjust = 0),
     strip.background = element_rect(fill = 'transparent', color = 'transparent'),
@@ -123,6 +148,61 @@ p1 <- df_wwtp_mex_cat_perc_dataviz %>%
 
 ggsave(filename = "./gallery_2022/2022_week-38_hydro-wwtp.png",
        plot = p1,
+       width = 8.5, height = 11, units = "in")
+
+p2 <- df_wwtp_mex_cat_perc_dataviz %>%
+  ggplot(aes(y = state_mex, x = perc_del_total,
+             fill = cumple_min_dilusion_factor_es,
+             color = cumple_min_dilusion_factor_es,
+             label = more_info_es)) + 
+  geom_col() +
+  geom_textbox(size = 2, 
+               width = unit(50, "pt"), 
+               box.padding = unit(rep(2.5,4),"pt"),
+               box.r = unit(3,"pt"),
+               fill = 'white',
+               nudge_x = 5,
+               hjust = 0
+  ) +
+  # geom_vline(xintercept = 150, colour = 'black') +
+  facet_wrap(~cumple_min_dilusion_factor_es,
+             labeller = labeller(cumple_min_dilusion_factor_es = label_wrap_gen(25)) #TIL (Today I Learned)
+  ) +
+  coord_cartesian(clip = "off", xlim = c(0,140)) +
+  scale_x_continuous(breaks = seq(25,100,by=25),
+                     labels = scales::label_percent(scale = 1)) + 
+  labs(title = title_text_es,
+       subtitle = subtitle_text_es,
+       caption = caption_text_es) +
+  theme(
+    # Legend
+    legend.position = "none",
+    # background
+    panel.background = element_rect(fill = 'transparent'),
+    # grid
+    panel.grid = element_blank(),
+    # Title
+    plot.title.position = "plot",
+    plot.title = element_textbox(size = 20,
+                                 width = unit(7.5,"in")),
+    # Subtitle
+    plot.subtitle = element_textbox(width = unit(7.5,"in")),
+    # Caption
+    plot.caption.position = "plot",
+    plot.caption = element_textbox(hjust = 0,
+                                   width= unit(7.5,"in")),
+    # Facets
+    strip.text = element_text(size = 10, hjust = 0),
+    strip.background = element_rect(fill = 'transparent', color = 'transparent'),
+    # Axes
+    axis.title = element_blank(),
+    axis.text.y = element_text(face = 'bold'),
+    axis.ticks.length = unit(0,"in"),
+  )
+
+
+ggsave(filename = "./gallery_2022/2022_week-38_hydro-wwtp_es.png",
+       plot = p2,
        width = 8.5, height = 11, units = "in")
 
 # ------ Data Art ------
