@@ -4,6 +4,7 @@ library(ggtext)
 library(sysfonts)
 library(showtextdb)
 library(showtext)
+library(patchwork)
 # devtools::install_github("davidsjoberg/ggsankey")
 # library(ggsankey)
 library(sf)
@@ -222,7 +223,11 @@ ggsave(filename = "./gallery_2022/2022_week-38_hydro-wwtp_es.png",
        plot = p2,
        width = 8.5, height = 11, units = "in")
 
-
+# Combine charts (for README repo)
+p_combined <- p1 + plot_spacer() + p2 + plot_layout(widths = c(0.49,0.02,0.49))
+ggsave(filename = "./gallery_2022/2022_week-38_hydro-wwtp_combined.png",
+       plot = p_combined,
+       width = 17, height = 11, units = "in")
 
 # ------ Data Art ------
 # df_wwtp_mex %>%
