@@ -104,6 +104,58 @@ body_font <- "body_font"
 # ------ Colour palette ------
 colour_palette <- c(NatParksPalettes::natparks.pals(name = "Banff", n = 8, direction = -1))[c(1,4,8)]
 
+# Setting up theme
+theme_update(
+  # Legend
+  legend.position = "none",
+  # background
+  panel.background = element_rect(fill = 'transparent', color = 'transparent'),
+  plot.background = element_rect(fill = "#FFFBF5", colour = "#FFFBF5"),
+  # grid
+  panel.grid = element_blank(),
+  panel.grid.major.x = element_line(colour = 'gray50',
+                                    size = 0.05,
+                                    lineend = 'round',
+                                    linetype = 'dashed'),
+  # Title
+  plot.title.position = "plot",
+  plot.title = element_textbox(family = title_font,
+                               face = 'bold',
+                               size = rel(6),
+                               lineheight = 0.3,
+                               width = unit(7.5,"in")),
+  # Subtitle
+  plot.subtitle = element_textbox(family = body_font,
+                                  size = rel(3),
+                                  lineheight = 0.3,
+                                  width = unit(7.5,"in")),
+  # Caption
+  plot.caption.position = "plot",
+  plot.caption = element_textbox(family = body_font,
+                                 size = rel(2),
+                                 lineheight = 0.3,
+                                 hjust = 0,
+                                 width= unit(7.5,"in")),
+  # Facets
+  strip.text = element_text(family = title_font,
+                            face = 'bold',
+                            size = rel(2.5),
+                            lineheight = 0.3,
+                            hjust = 0),
+  strip.background = element_rect(fill = 'transparent', color = 'transparent'),
+  # Axes
+  axis.title = element_blank(),
+  axis.text.y = element_text(family = body_font,
+                             size = rel(3),
+                             lineheight = 0.1,
+                             face = 'bold'),
+  axis.text.x = element_text(family = body_font,
+                             size = rel(2.65),
+                             lineheight = 0.1),
+  axis.ticks.length = unit(0,"in"),
+)
+
+
 # ------ DataViz english ------
 p1 <- df_wwtp_mex_cat_perc_dataviz %>%
   ggplot(aes(y = state_mex, x = perc_del_total,
@@ -130,56 +182,7 @@ p1 <- df_wwtp_mex_cat_perc_dataviz %>%
   scale_colour_manual(values = colour_palette) +
   labs(title = title_text_en,
        subtitle = subtitle_text_en,
-       caption = caption_text_en) +
-  theme(
-    # Legend
-    legend.position = "none",
-    # background
-    panel.background = element_rect(fill = 'transparent', color = 'transparent'),
-    plot.background = element_rect(fill = "#FFFBF5", colour = "#FFFBF5"),
-    # grid
-    panel.grid = element_blank(),
-    panel.grid.major.x = element_line(colour = 'gray50',
-                                      size = 0.05,
-                                      lineend = 'round',
-                                      linetype = 'dashed'),
-    # Title
-    plot.title.position = "plot",
-    plot.title = element_textbox(family = title_font,
-                                 face = 'bold',
-                                 size = rel(6),
-                                 lineheight = 0.3,
-                                 width = unit(7.5,"in")),
-    # Subtitle
-    plot.subtitle = element_textbox(family = body_font,
-                                    size = rel(3),
-                                    lineheight = 0.3,
-                                    width = unit(7.5,"in")),
-    # Caption
-    plot.caption.position = "plot",
-    plot.caption = element_textbox(family = body_font,
-                                   size = rel(2),
-                                   lineheight = 0.3,
-                                   hjust = 0,
-                                   width= unit(7.5,"in")),
-    # Facets
-    strip.text = element_text(family = title_font,
-                              face = 'bold',
-                              size = rel(2.5),
-                              lineheight = 0.3,
-                              hjust = 0),
-    strip.background = element_rect(fill = 'transparent', color = 'transparent'),
-    # Axes
-    axis.title = element_blank(),
-    axis.text.y = element_text(family = body_font,
-                               size = rel(3),
-                               lineheight = 0.1,
-                               face = 'bold'),
-    axis.text.x = element_text(family = body_font,
-                               size = rel(2.65),
-                               lineheight = 0.1),
-    axis.ticks.length = unit(0,"in"),
-  )
+       caption = caption_text_en)
 
 ggsave(filename = "./gallery_2022/2022_week-38_hydro-wwtp.png",
        plot = p1,
@@ -212,61 +215,14 @@ p2 <- df_wwtp_mex_cat_perc_dataviz %>%
   scale_colour_manual(values = colour_palette) +
   labs(title = title_text_es,
        subtitle = subtitle_text_es,
-       caption = caption_text_es) +
-  theme(
-    # Legend
-    legend.position = "none",
-    # background
-    panel.background = element_rect(fill = 'transparent', color = 'transparent'),
-    plot.background = element_rect(fill = "#FFFBF5", colour = "#FFFBF5"),
-    # grid
-    panel.grid = element_blank(),
-    panel.grid.major.x = element_line(colour = 'gray50',
-                                      size = 0.05,
-                                      lineend = 'round',
-                                      linetype = 'dashed'),
-    # Title
-    plot.title.position = "plot",
-    plot.title = element_textbox(family = title_font,
-                                 face = 'bold',
-                                 size = rel(6),
-                                 lineheight = 0.3,
-                                 width = unit(7.5,"in")),
-    # Subtitle
-    plot.subtitle = element_textbox(family = body_font,
-                                    size = rel(3),
-                                    lineheight = 0.3,
-                                    width = unit(7.5,"in")),
-    # Caption
-    plot.caption.position = "plot",
-    plot.caption = element_textbox(family = body_font,
-                                   size = rel(2),
-                                   lineheight = 0.3,
-                                   hjust = 0,
-                                   width= unit(7.5,"in")),
-    # Facets
-    strip.text = element_text(family = title_font,
-                              face = 'bold',
-                              size = rel(2.5),
-                              lineheight = 0.3,
-                              hjust = 0),
-    strip.background = element_rect(fill = 'transparent', color = 'transparent'),
-    # Axes
-    axis.title = element_blank(),
-    axis.text.y = element_text(family = body_font,
-                               size = rel(3),
-                               lineheight = 0.1,
-                               face = 'bold'),
-    axis.text.x = element_text(family = body_font,
-                               size = rel(2.65),
-                               lineheight = 0.1),
-    axis.ticks.length = unit(0,"in"),
-  )
+       caption = caption_text_es)
 
 
 ggsave(filename = "./gallery_2022/2022_week-38_hydro-wwtp_es.png",
        plot = p2,
        width = 8.5, height = 11, units = "in")
+
+
 
 # ------ Data Art ------
 # df_wwtp_mex %>%
