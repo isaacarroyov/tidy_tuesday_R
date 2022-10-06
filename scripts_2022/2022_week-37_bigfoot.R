@@ -70,11 +70,7 @@ df_to_graph <- df_bigrams_class_decade_clean_adj_count %>%
                                 freq > quantile(freq, 0.5) & freq <= quantile(freq, 0.8) ~ 2,
                                 freq > quantile(freq, 0.8) & freq <= quantile(freq, 0.9) ~ 3,
                                 freq > quantile(freq, 0.9) & freq <= quantile(freq, 0.97) ~ 4,
-                                T ~ 5),
-         colour_enc = factor(colour_enc, labels = c("frequency less than 23", "frequency more than 23 and less than 43",
-                                                    "frequency more than 43 and less than 62",
-                                                    "frequency more than 62 and less than 107",
-                                                    "frequency more than 107")))
+                                T ~ 5))
 
 
 # ------ CREATE NETWORK ------
@@ -83,7 +79,15 @@ graph_bigrams <- df_to_graph %>%
   as_tbl_graph() %>%
   activate(nodes) %>%
   mutate(degree_score = centrality_degree()) %>%
-  rename(word = name)
+  rename(word = name) %>%
+  activate(edges) %>%
+  mutate(colour_enc = ordered(colour_enc,
+                              levels = c(1,2,3,4,5),
+                              labels = c("frequency less than 23",
+                                         "frequency more than 23 and less than 43",
+                                         "frequency more than 43 and less than 62",
+                                         "frequency more than 62 and less than 107",
+                                         "frequency more than 107")))
 
 # get highest degree scores
 vec_words_highest_degree_scores <- graph_bigrams %>%
@@ -194,4 +198,3 @@ ggsave(filename = "./gallery_2022/2022_week-37_bigfoot.png",
        plot = p1,
        width = 8.5, height = 11, units = "in",
        bg = "#FFFBF6")
-
