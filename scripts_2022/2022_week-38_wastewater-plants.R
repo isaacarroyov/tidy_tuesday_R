@@ -74,12 +74,18 @@ subtitle_text_en <- "The <b>dilution factor (DF)</b> is the ratio between the na
 caption_text_en <- 'Designed by Isaac Arroyo (@unisaacarroyov on twitter)<br>#TidyTuesday Week 38: Hydro Wastewater plants<br>Data provided by Ehalt Macedo, H., Lehner, B., Nicell, J., Grill, G., Li, J., Limtong, A., and Shakya, R. in their article _"Distribution and characteristics of wastewater treatment plants within the global river network"_'
 
 title_text_es <- "Factor de dilución en las plantas de tratamiento de aguas residuales (PTAR) mexicanas"
-subtitle_text_es <- "El <b>factor de dilución (DF)</b> es la relación entre la descarga natural del cuerpo de agua receptor y la descarga del efluente de la PTAR, que se ha utilizado para determinar los riesgos ecológicos originados por las PTAR. Los factores de dilución se han utilizado para predecir la exposición potencial a las sustancias químicas del desagüe a partir de la densidad de población, lo que, a nivel regional, puede ayudar a prevenir los efectos negativos mediante la identificación de zonas de altas concentraciones de contaminantes. El <b>factor de dilución mínimo recomendado por la Agencia Europea de Medicamentos (EMA) para la evaluación del riesgo medioambiental de los medicamentos de uso humano es de 10</b>.<br><br>La visualización de datos muestra el porcentaje de PTAR de cada estado mexicano que...<br>&bull; cumplen el DF mínimo según la EMA<br>&bull; no cumplen con los DF mínimos según la EMA<br>&bull; no hay información relacinada al DF<br><br>Centrándose más en las dos últimas categorías."
+subtitle_text_es <- "El <b>factor de dilución (DF)</b> es la relación entre la descarga natural del cuerpo de agua receptor y la descarga del efluente de la PTAR, que se ha utilizado para determinar los riesgos ecológicos originados por las PTAR. Los factores de dilución se han utilizado para predecir la exposición potencial a las sustancias químicas del desagüe a partir de la densidad de población, lo que, a nivel regional, puede ayudar a prevenir los efectos negativos mediante la identificación de zonas de altas concentraciones de contaminantes. El <b>factor de dilución mínimo recomendado por la Agencia Europea de Medicamentos (EMA) para la evaluación del riesgo medioambiental de los medicamentos de uso humano es de 10</b>.<br><br>La visualización de datos muestra el porcentaje de PTAR de cada estado mexicano que...<br>&bull; cumplen el DF mínimo según la EMA<br>&bull; no cumplen con los DF mínimos según la EMA<br>&bull; no hay información relacinada al DF<br><b>Centrándose más en las dos últimas categorías</b>."
 caption_text_es <- 'Diseño por Isaac Arroyo (@unisaacarroyov en twitter)<br>#TidyTuesday Week 38: Hydro Wastewater plants<br>Datos por Ehalt Macedo, H., Lehner, B., Nicell, J., Grill, G., Li, J., Limtong, A., y Shakya, R. en su artículo _"Distribution and characteristics of wastewater treatment plants within the global river network"_'
 
+# ------ Typography ------
+font_add_google("Oswald","title_font")
+font_add_google("Quicksand","body_font")
+showtext_auto()
 
+title_font <- "title_font"
+body_font <- "body_font"
 
-
+# ------ Data wrangling especially for the visualization ------
 df_wwtp_mex_cat_perc_dataviz <- df_wwtp_mex_cat_perc %>%
   mutate(state_mex = fct_reorder(state_mex, # Ordenar eje y por numero de wwtp
                                  freq, sum)) %>% 
@@ -127,22 +133,45 @@ p1 <- df_wwtp_mex_cat_perc_dataviz %>%
     panel.background = element_rect(fill = 'transparent'),
     # grid
     panel.grid = element_blank(),
+    panel.grid.major.x = element_line(colour = 'gray50',
+                                      size = 0.05,
+                                      lineend = 'round',
+                                      linetype = 'dashed'),
     # Title
     plot.title.position = "plot",
-    plot.title = element_textbox(size = 20,
+    plot.title = element_textbox(family = title_font,
+                                 face = 'bold',
+                                 size = rel(6),
+                                 lineheight = 0.3,
                                  width = unit(7.5,"in")),
     # Subtitle
-    plot.subtitle = element_textbox(width = unit(7.5,"in")),
+    plot.subtitle = element_textbox(family = body_font,
+                                    size = rel(3),
+                                    lineheight = 0.3,
+                                    width = unit(7.5,"in")),
     # Caption
     plot.caption.position = "plot",
-    plot.caption = element_textbox(hjust = 0,
+    plot.caption = element_textbox(family = body_font,
+                                   size = rel(2),
+                                   lineheight = 0.3,
+                                   hjust = 0,
                                    width= unit(7.5,"in")),
     # Facets
-    strip.text = element_text(size = 10, hjust = 0),
+    strip.text = element_text(family = title_font,
+                              face = 'bold',
+                              size = rel(2.5),
+                              lineheight = 0.3,
+                              hjust = 0),
     strip.background = element_rect(fill = 'transparent', color = 'transparent'),
     # Axes
     axis.title = element_blank(),
-    axis.text.y = element_text(face = 'bold'),
+    axis.text.y = element_text(family = body_font,
+                               size = rel(2.75),
+                               lineheight = 0.1,
+                               face = 'bold'),
+    axis.text.x = element_text(family = body_font,
+                               size = rel(2.65),
+                               lineheight = 0.1),
     axis.ticks.length = unit(0,"in"),
   )
 
@@ -181,22 +210,45 @@ p2 <- df_wwtp_mex_cat_perc_dataviz %>%
     panel.background = element_rect(fill = 'transparent'),
     # grid
     panel.grid = element_blank(),
+    panel.grid.major.x = element_line(colour = 'gray50',
+                                      size = 0.05,
+                                      lineend = 'round',
+                                      linetype = 'dashed'),
     # Title
     plot.title.position = "plot",
-    plot.title = element_textbox(size = 20,
+    plot.title = element_textbox(family = title_font,
+                                 face = 'bold',
+                                 size = rel(6),
+                                 lineheight = 0.3,
                                  width = unit(7.5,"in")),
     # Subtitle
-    plot.subtitle = element_textbox(width = unit(7.5,"in")),
+    plot.subtitle = element_textbox(family = body_font,
+                                    size = rel(3),
+                                    lineheight = 0.3,
+                                    width = unit(7.5,"in")),
     # Caption
     plot.caption.position = "plot",
-    plot.caption = element_textbox(hjust = 0,
+    plot.caption = element_textbox(family = body_font,
+                                   size = rel(2),
+                                   lineheight = 0.3,
+                                   hjust = 0,
                                    width= unit(7.5,"in")),
     # Facets
-    strip.text = element_text(size = 10, hjust = 0),
+    strip.text = element_text(family = title_font,
+                              face = 'bold',
+                              size = rel(2.5),
+                              lineheight = 0.3,
+                              hjust = 0),
     strip.background = element_rect(fill = 'transparent', color = 'transparent'),
     # Axes
     axis.title = element_blank(),
-    axis.text.y = element_text(face = 'bold'),
+    axis.text.y = element_text(family = body_font,
+                               size = rel(2.75),
+                               lineheight = 0.1,
+                               face = 'bold'),
+    axis.text.x = element_text(family = body_font,
+                               size = rel(2.65),
+                               lineheight = 0.1),
     axis.ticks.length = unit(0,"in"),
   )
 
