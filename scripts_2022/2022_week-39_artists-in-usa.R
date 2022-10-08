@@ -56,3 +56,39 @@ df_hispanic_artists <- artists %>%
                                                              "Between 50% and 100%",
                                                              "More than 100%")))
 
+
+# ------ DATA VISUALIZATION (ggsankey) ------
+df_hispanic_artists_sankey <- df_hispanic_artists %>%
+  make_long(artists_share_perc_bins, art_expression, concentration_labor_force_bins)
+
+artist_share_perc_colours <- c(met.brewer(name = "VanGogh3", n = 5))
+art_expression_colours <- c(met.brewer("Archambault", n = 6))
+concentration_labor_force_colours <- c(met.brewer(name = "OKeeffe1", n = 5))
+
+colours_fill <- c("≤ 0.2%" = artist_share_perc_colours[1],
+                  "0.2% - 0.4%" = artist_share_perc_colours[2],
+                  "0.4% - 0.6%" = artist_share_perc_colours[3],
+                  "0.6% - 0.8%" = artist_share_perc_colours[4],
+                  "0.8% - 1%" = artist_share_perc_colours[5],
+                  "Architecture" = art_expression_colours[1],
+                  "Visual" = art_expression_colours[2],
+                  "Performance" = art_expression_colours[3],
+                  "Dance" = art_expression_colours[4],
+                  "Music" = art_expression_colours[5],
+                  "Literature" = art_expression_colours[6],
+                  "Between -100% and -50%" = concentration_labor_force_colours[1],
+                  "Between -50% and 0%" = concentration_labor_force_colours[2],
+                  "Between 0% and 50%" = concentration_labor_force_colours[3],
+                  "Between 50% and 100%" = concentration_labor_force_colours[4],
+                  "More than 100%" = concentration_labor_force_colours[5])
+
+df_hispanic_artists_sankey %>%
+  ggplot(aes(x = x, 
+             next_x = next_x, 
+             node = node, 
+             next_node = next_node,
+             fill = node
+  )) +
+  geom_sankey(space = 25) +
+  geom_sankey_label(aes(label=node)) +
+  scale_fill_manual(values = colours_fill)
