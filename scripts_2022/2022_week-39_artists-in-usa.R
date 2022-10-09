@@ -69,6 +69,9 @@ df_hispanic_artists <- artists %>%
                                                              "Between 50% and 100% <b>more</b> than the national labor force share",
                                                              "<b>More</b> than 100% of the national labor force share")))
 
+# TODO: try a variation of barcharts
+
+
 
 # ------ IGNORE IT (tried to make an alluvial/sankey)
 # ------ DATA VISUALIZATION (ggalluvial) ------
