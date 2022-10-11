@@ -114,7 +114,7 @@ graph_bigrams <- graph_bigrams %>%
 # ------ Texts ------
 title_text <- "Describing Big Foot"
 subtitle_text_degree <- "One of the most famous mysteries in the U.S. is spotting Big Foot. The Big Foot Field Researchers Organization (BFRO) has gathered testimonials over the years and across the country.<br><br>The data visualization displays dots and lines. Each dot is a word, and when it is connected to another through a line, a bigram (a pair of words) is formed. The entire network showcases the most common bigrams used in the testimonial.<br><br><b>The connection between pairs of words:</b> The more connections a word has, the more is used in bigrams, and the bigger the dot (node).<br><br><b>The frequency of the bigrams:</b> It is not enough to know the most used words in bigrams; that's why the frequency of the bigram (connection) is shown as the colour of the links between the nodes."
-caption_text <- "_The BFRO has classified the testimonials according to the potential for misinterpretation of what was observed or heard. Therefore, the words shown in the visualization are from testimonials Class A and B, classes with a low degree of misinterpretation._<br><br>Designed by Isaac Arroyo (@unisaacarroyov on twitter)<br>#TidyTuesday Week 31: Big Foot"
+caption_text <- "_The BFRO has classified the testimonials according to the potential for misinterpretation of what was observed or heard. Therefore, the words shown in the visualization are from testimonials Class A and B, classes with a low degree of misinterpretation._<br><br>Designed by Isaac Arroyo (@unisaacarroyov on twitter)<br>#TidyTuesday Week 37: Big Foot"
 # ------ Colour Palette ------
 
 # ------ Typography ------
