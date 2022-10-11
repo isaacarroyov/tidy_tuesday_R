@@ -45,3 +45,44 @@ df_dataviz_2 <- df %>%
          category_tags = if_else(category_tags == "Iphone", "iPhone", category_tags)) %>%
   count(category_tags, sort = T) %>%
   rename(category_tags_times_used = n)
+
+
+
+# ------ DATA VIZ ------  
+
+# ------ typography ------  
+
+# ------ text ------  
+title_text_1 <- "Title 1"
+subtitle_text_1 <- "Subtitle 1"
+title_text_2 <- "Title 2"
+subtitle_text_2 <- "Subtitle 2"
+caption_text <- "Designed by Isaac Arroyo (@unisaacarroyov on twitter)<br>#TidyTuesday Week 40: Product Hunt<br>Dataset provided by components.one"
+
+# ------ theme ------  
+
+# ------ line chart ------  
+df_dataviz_1 %>%
+  mutate(year_date = factor(year_date)) %>%
+  ggplot(aes(x = week_of_year, y = number_of_releases, colour = year_date)) +
+  geom_line() +
+  gghighlight::gghighlight(number_of_releases > 0, use_direct_label = F) +
+  facet_wrap(~year_date, ncol = 2) +
+  labs(title = title_text_1, subtitle = subtitle_text_1, caption = caption_text) +
+  theme(
+    legend.position = "none",
+    # Plot
+    # Title
+    plot.title.position = "plot",
+    plot.title = element_text(),
+    # Subtitle
+    plot.subtitle = element_textbox(),
+    # Caption
+    plot.caption.position = "plot",
+    plot.caption = element_textbox(),
+    # Axis
+    axis.title = element_blank(),
+    # Facets
+  )
+
+# ------ bar chart ------
