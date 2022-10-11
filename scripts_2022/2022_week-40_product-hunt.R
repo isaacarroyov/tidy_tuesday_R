@@ -9,9 +9,12 @@ library(showtext)
 product_hunt <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2022/2022-10-04/product_hunt.csv')
 glimpse(product_hunt)
 
-# ------ DATA VIZ IDEA ------
-# Visualizar las palabras mas usadas para describir productos de
-# 
+# ------ DATA VIZ IDEAS ------
+# Se pueden hacer dos tipos de visualizaciones
+# 1a - Una network con las conexiones de los n-gramas usadas para describir productos 
+#      de ciertas tags
+# 2a - Una serie de tiempo observando la cantidad de realises de productos para saber
+#      si hay una "estacion" donde hayan mas
 
 # ------ DATA WRANGLING ------
 # Forma de la tabla
@@ -24,11 +27,3 @@ df <- product_hunt %>%
   unnest_longer(category_tags) %>%
   mutate(category_tags = str_squish(category_tags),
          release_date = ymd(release_date))
-
-
-  
-
-
-
-
-
