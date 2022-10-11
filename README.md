@@ -64,3 +64,8 @@ Contributions to the #TidyTuesday challenge created by [@R4DScommunity](https://
 [**Code**](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/scripts_2022/2022_week-38_wastewater-plants.R)  
 **Data Visualization in English and Español**
 ![](./gallery_2022/2022_week-38_hydro-wwtp_combined.png)
+
+### Week 39: (Hispanic) Artists in USA
+[**Code**](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/scripts_2022/2022_week-39_artists-in-usa.R)  
+
+![](./gallery_2022/2022_week-39_artists-in-usa.png)
