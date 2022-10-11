@@ -10,11 +10,9 @@ product_hunt <- readr::read_csv('https://raw.githubusercontent.com/rfordatascien
 glimpse(product_hunt)
 
 # ------ DATA VIZ IDEAS ------
-# Se pueden hacer dos tipos de visualizaciones
-# 1a - Una network con las conexiones de los n-gramas usadas para describir productos 
-#      de ciertas tags
-# 2a - Una serie de tiempo observando la cantidad de realises de productos para saber
-#      si hay una "estacion" donde hayan mas
+# La visualizacion sera una combinacion de dos
+# 1a - Line charts de # de releases por semana para mostrar el gran cambio en 2017
+# 2a - Una bar chart que se enfoque en los tags del 2017
 
 # ------ DATA WRANGLING ------
 # Forma de la tabla
@@ -23,7 +21,10 @@ df <- product_hunt %>%
   select(category_tags, product_description, release_date) %>%
   drop_na(product_description) %>%
   mutate(category_tags = str_remove_all(category_tags, pattern = "[''\\[\\]]"),
-         category_tags = str_split(string = category_tags, pattern = ",")) %>%
-  unnest_longer(category_tags) %>%
-  mutate(category_tags = str_squish(category_tags),
+         category_tags = str_split(string = category_tags, pattern = ","),
          release_date = ymd(release_date))
+
+  
+
+
+
