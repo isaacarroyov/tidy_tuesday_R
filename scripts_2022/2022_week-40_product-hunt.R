@@ -3,6 +3,7 @@ library(tidyverse)
 library(lubridate)
 library(ggtext)
 library(MetBrewer)
+library(cowplot)
 library(geomtextpath)
 library(sysfonts)
 library(showtext)
@@ -95,7 +96,7 @@ theme_update(
                                  size = rel(3),
                                  width = unit(625,"pt"),
                                  hjust = 0.5,
-                                 halign = 0),
+                                 halign = 1),
   # Axis
   axis.title = element_blank(),
   # Grid
@@ -133,8 +134,10 @@ p1 <- df_dataviz_1 %>%
     # Facets*
     strip.text = element_text(family = title_font,
                               face = "bold",
-                              lineheight = 0.2,
-                              size = rel(3))
+                              lineheight = 0,
+                              size = rel(3)),
+    panel.spacing.y = unit(-10,"pt"),
+    panel.spacing.x = unit(20,"pt")
   )
 
 # ------ bar chart ------
@@ -168,4 +171,10 @@ p2 <- df_dataviz_2 %>%
   )
 
 
-
+# ------ Combine charts ------
+final <- plot_grid(p1, p2,ncol = 1)
+ggsave(filename = "./gallery_2022/2022_week-40_product-hunt.png",
+       width = 1080, height = 1920, units = "px",
+       plot = final,
+       bg = "#FFFDF9",
+       dpi = 300, scale = 2.5)
