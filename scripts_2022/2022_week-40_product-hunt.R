@@ -34,10 +34,6 @@ df_dataviz_1 <- df %>%
   filter(week_of_year != 53) %>%
   rename(number_of_releases = n)
 
-df %>%
-  filter(week(release_date) %in% 33:35,
-         year(release_date) == 2017)
-
 # ------ DATA WRANGLING (data viz 2) ------
 # Focusing on 2017 weeks 33, 34 and 35
 df_dataviz_2 <- df %>%
@@ -50,7 +46,9 @@ df_dataviz_2 <- df %>%
          category_tags = str_to_title(category_tags),
          category_tags = if_else(category_tags == "Iphone", "iPhone", category_tags)) %>%
   count(category_tags, sort = T) %>%
-  rename(category_tags_times_used = n)
+  rename(category_tags_times_used = n) %>%
+  mutate(category_tags_times_used_perc = 100 * (category_tags_times_used/313),
+         label_info = paste0("appeared ",round(category_tags_times_used_perc,1),"% of the times"))
 
 
 
@@ -68,7 +66,7 @@ body_font <- "body_font"
 # ------ text ------  
 title_text_1 <- "Changes in Product Hunt: 3 weeks in 2017"
 subtitle_text_1 <- "Product Hunt is the internet's largest social network and clearinghouse for apps. It's mainly used to promote tech products.<br>Like every new idea, at first, the inflow of products and releases is low, but eventually, it increases. So when did it happen to Product Hunt? During August and September 2017 (between the 33rd and 35th week of the year), the site registered a significant increase in product releases."
-subtitle_text_2 <- "What types of releases happened during those three weeks (omitting Tech)? Mostly **Productivity**, **Web Apps** and **iPhone**."
+subtitle_text_2 <- "What do the tags tell us about the releases during those three weeks? Mostly **Tech**, **Productivity**, **Web Apps** and **iPhone**."
 caption_text <- "Designed by Isaac Arroyo (@unisaacarroyov on twitter)<br>#TidyTuesday Week 40: Product Hunt<br>Dataset provided by components.one"
 
 # ------ theme ------ 
@@ -93,11 +91,15 @@ theme_update(
   # Caption
   plot.caption.position = "plot",
   plot.caption = element_textbox(family = body_font,
-                                 lineheight = 0.3,
+                                 lineheight = 0.4,
                                  size = rel(3),
                                  width = unit(625,"pt"),
                                  hjust = 0.5,
                                  halign = 0),
+  # Axis
+  axis.title = element_blank(),
+  # Grid
+  panel.grid = element_blank(),
 )
 
 # ------ line chart ------  
@@ -116,10 +118,7 @@ p1 <- df_dataviz_1 %>%
   facet_wrap(~year_date, ncol = 2, scales = "free") +
   labs(title = title_text_1, subtitle = subtitle_text_1) +
   theme(
-    # Grid*
-    panel.grid = element_blank(),
     # Axis*
-    axis.title = element_blank(),
     axis.text.y = element_blank(),
     axis.line.x = element_line(colour = 'gray60', size = 0.4),
     axis.ticks.x = element_line(colour = 'gray60',
@@ -139,4 +138,34 @@ p1 <- df_dataviz_1 %>%
   )
 
 # ------ bar chart ------
+p2 <- df_dataviz_2 %>%
+  head(10) %>%
+  mutate(category_tags = fct_reorder(category_tags, category_tags_times_used_perc)) %>%
+  ggplot(aes(y = category_tags)) +
+  geom_segment(aes(x=0, xend = category_tags_times_used_perc, yend = category_tags),
+               size = 0.75) +
+  geom_point(aes(x = category_tags_times_used_perc),
+             size = 8, colour = "#de4f33") +
+  geom_textbox(aes(label = label_info, x = 0),
+               hjust = 0,
+               size = 10,
+               family = body_font,
+               fontface = 'italic',
+               minwidth = unit(10,"pt"),
+               colour = "#de4f33",
+               box.colour = 'transparent',
+               box.padding = unit(3,"pt"),
+               nudge_y = -0.18) +
+  labs(title = NULL, subtitle = subtitle_text_2, caption = caption_text) +
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_text(family = title_font, 
+                               lineheight = 0.3,
+                               size = rel(4),
+                               face = 'bold',
+                               colour = 'black',
+                               margin = margin(r = -20))
+  )
+
+
 
