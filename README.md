@@ -74,3 +74,8 @@ Contributions to the #TidyTuesday challenge created by [@R4DScommunity](https://
 [**Code**](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/scripts_2022/2022_week-40_product-hunt.R)
 
 ![](./gallery_2022/2022_week-40_product-hunt.png)
+
+### Week 41: Ravelry Yarn
+[**Code**](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/scripts_2022/2022_week-41_ravelry-yarn.R)
+
+![](./gallery_2022/2022_week-41_ravelry-yarn.png)
