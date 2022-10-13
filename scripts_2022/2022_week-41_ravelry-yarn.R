@@ -1,8 +1,6 @@
 library(dplyr)
 library(ggplot2)
 library(MetBrewer)
-# install.packages('ggbeeswarm')
-library(ggbeeswarm)
 library(ggtext)
 library(sysfonts)
 library(showtext)
@@ -21,7 +19,6 @@ yarn <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidyt
 df <- yarn %>%
   select(yarn_company_name, rating_average, rating_count,yarn_weight_name) %>%
   tidyr::drop_na()
-  # select(yarn_company_name, rating_average, rating_count, grams, yardage, yarn_weight_wpi, yarn_weight_name)
 
 # ------ (creative) DATA VISUALIZATION ------
 df_dataviz <- df %>%
@@ -46,7 +43,7 @@ caption_text <- "Almost the entire data visualization (the use of points and the
 # Chart
 p1 <- df_dataviz %>%
   ggplot(aes(x = avg_rating_count, y = avg_rating_average, colour = yarn_weight_name)) +
-  geom_point(alpha = 0.75) +
+  geom_jitter(width = 0.2, height = 0.1) +
   scale_x_log10(limits =c(1,1e5)) +
   scale_colour_manual(values = met.brewer(name = "Signac", n = 15)) +
   coord_polar() +
