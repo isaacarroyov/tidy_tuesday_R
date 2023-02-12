@@ -1,6 +1,10 @@
 # Tidy Tuesday 🖌️ 💻
 Contributions to the #TidyTuesday challenge created by [@R4DScommunity](https://twitter.com/R4DScommunity)
-## 2022 Gallery
+
+## Previous galleries
+<details><summary><b>2022</b></summary>
+<p>
+
 ### Week 41: Ravelry Yarn
 [**Code**](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/scripts_2022/2022_week-41_ravelry-yarn.R)
 
@@ -75,3 +79,20 @@ Contributions to the #TidyTuesday challenge created by [@R4DScommunity](https://
 [**Code**](https://github.com/isaacarroyov/tidy_tuesday_R/blob/main/scripts_2022/2022_week-27_san-francisco-rents.R)
 
 ![](./gallery_2022/2022_week-27_san-francisco-rents.png)
+
+</p>
+</details>
+
+## 2023 Gallery
+
+### Week 1: Bring Your Own Data
+[**Code**]()
+
+### Week 2: Bird FeederWatch data
+[**Code**]()
+
+### Week 3: Art history data
+[**Code**]()
+
+### Week 4: Alone data
+[**Code**]()
