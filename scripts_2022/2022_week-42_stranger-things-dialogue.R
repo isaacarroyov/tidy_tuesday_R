@@ -17,4 +17,23 @@ datos <- all_dialogue %>%
 # DATA VIZ IDEA
 # Para esta ocasion, otra network podria funcionar. En este caso, seria ver las palabras que mas 
 # se repiten en toda la serie y hacia que episodios van dirigidas. Se puede crear una red gigante de 
-# palabras o 4 redes
+# palabras o 4 redes (una por cada season)
+
+# ------ TEXT MINING LIBRARIES ------
+# install.packages("tidytext")
+library(tidytext)
+
+
+# ------ NETWORK LIBRARIES ------
+# library(ggraph)
+# library(tidygraph)
+
+df_stage_words_all_seasons <- datos %>%
+  select(season, stage_direction) %>%
+  drop_na() %>%
+  mutate(stage_direction = str_remove_all(stage_direction,"\\[|\\]")) %>%
+  unnest_tokens(output = word_stage, input = stage_direction) %>%
+  filter(!word_stage %in% stop_words$word)
+
+df_stage_words_all_seasons %>%
+  count(word_stage, season, sort = T)
