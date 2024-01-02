@@ -3,3 +3,4 @@
 *.RData
 *.Rhistory
 ignore_*
+ignored_files/
