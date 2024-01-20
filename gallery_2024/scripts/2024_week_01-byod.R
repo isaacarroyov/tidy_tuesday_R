@@ -1,4 +1,6 @@
 library(tidyverse)
+library(tidygraph)
+library(ggraph)
 
 # IDEA:
 # Create a network (or 2 networks) where the main animal category
@@ -46,3 +48,12 @@ pairs_mel <- count(db, categoria_melancolia_02, subcategoria_melancolia) %>%
 
 # ~ ~ full data ~ ~ #
 df2graph <- bind_rows(pairs_pleasure, pairs_mel) %>% rename(freq = n)
+
+# ~ ~ From tibble to graph ~ ~ #
+graph_animals <- df2graph %>%
+  rename(from = tipo, to = subtipo) %>%
+  igraph::graph_from_data_frame() %>%
+  as_tbl_graph() %>%
+  to_undirected()
+
+# = = DATA VISUALIZATION = = #
